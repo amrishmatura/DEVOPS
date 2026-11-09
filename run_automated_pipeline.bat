@@ -1,16 +1,14 @@
 @echo off
 setlocal enabledelayedexpansion
-title Jenkins Automated Pipeline Execution
+title Automated CI/CD Pipeline Execution
 echo ========================================================
-echo   CSN-452 DevOps - Automated CI/CD Pipeline Simulator
-echo   Job Name: Deployment-Automation
+echo   Automated CI/CD Pipeline Simulator
+echo   Job: Deployment-Automation
 echo   Pipeline: 3 Stages (Install - Deploy - Verify)
 echo ========================================================
 echo.
 
 cd /d "%~dp0deployment-comparison"
-
-set START_TIME=%time%
 
 echo [Pipeline] stage('Install Dependencies')
 echo [Pipeline] dir('deployment-comparison')

@@ -1,5 +1,5 @@
 /**
- * DIT University - CSN-452 DevOps Project
+ * Comparative Study of Manual and Automated Software Deployment
  * Live Health Poller & Deployment Execution Runner
  *
  * Comparative Study:

@@ -1,6 +1,6 @@
-// DIT University - CSN-452 DevOps Project
-// Project Report Chapter 3.3: Jenkins Pipeline Implementation
-// Repository: deployment-comparison
+// Comparative Study of Manual and Automated Software Deployment
+// Jenkins Declarative Pipeline Implementation
+// Target Application: deployment-comparison
 
 pipeline {
     agent any

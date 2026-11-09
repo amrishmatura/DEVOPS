@@ -1,9 +1,9 @@
 @echo off
 setlocal
-title Manual Deployment Execution
+title Manual Software Deployment Execution
 echo ========================================================
-echo   CSN-452 DevOps - Manual Software Deployment
-echo   Target: Node.js Express Service (Port 3000)
+echo   Manual Software Deployment Workflow
+echo   Target: Node.js Express REST Service (Port 3000)
 echo ========================================================
 echo.
 

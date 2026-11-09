@@ -3,28 +3,27 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Comparative Study of Manual and Automated Software Deployment — CSN-452</title>
+  <title>Comparative Study of Manual and Automated Software Deployment</title>
   <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
 
   <!-- ══════════════════════════════════════════════════════════════
-       MASTHEAD — Academic Header (matches report title page)
+       MASTHEAD — Clean Header
        ══════════════════════════════════════════════════════════════ -->
   <header class="masthead">
     <div class="masthead-inner">
-      <span class="chip">DIT University · School of Computing · CSN-452 DevOps</span>
+      <span class="chip">Continuous Integration &amp; Continuous Deployment (CI/CD)</span>
       <h1>Comparative Study of Manual and<br>Automated Software Deployment</h1>
       <p>
-        A comparative evaluation of manual terminal deployment versus a Jenkins-based
-        automated CI/CD pipeline for a Node.js Express application, measuring deployment
+        An empirical evaluation of manual terminal deployment versus a Jenkins-based
+        automated CI/CD pipeline for a Node.js Express web service, measuring deployment
         time, human effort, error rate, failure frequency, and recovery velocity.
       </p>
       <div class="masthead-meta">
-        <div>Course: <strong>CSN-452 (DevOps)</strong></div>
-        <div>Guide: <strong>Mrs. Suchi Johari</strong></div>
-        <div>Submitted by: <strong>Hemant Sharma &amp; Sakshi Patel</strong></div>
-        <div>Health Endpoint: <strong><a href="/health" target="_blank">/health → HTTP 200</a></strong></div>
+        <div>Architecture: <strong>Node.js Express + Jenkins CI + Git</strong></div>
+        <div>Pipeline Stages: <strong>Install → Deploy → Verify</strong></div>
+        <div>Health Verification: <strong><a href="/health" target="_blank">/health → HTTP 200</a></strong></div>
       </div>
     </div>
   </header>
@@ -35,7 +34,7 @@
   <nav class="tab-nav">
     <div class="tab-nav-inner">
       <button class="tab-btn active" data-tab="pane-home">1. Application Dashboard</button>
-      <button class="tab-btn" data-tab="pane-table">2. Chapter 4 Comparative Table</button>
+      <button class="tab-btn" data-tab="pane-table">2. Comparative Analysis Table</button>
       <button class="tab-btn" data-tab="pane-runner">3. Live Deployment Runner</button>
       <button class="tab-btn" data-tab="pane-pipeline">4. Jenkins Pipeline Code</button>
       <button class="tab-btn" data-tab="pane-guide">5. Project Extensibility Guide</button>
@@ -48,11 +47,11 @@
   <main class="main">
 
     <!-- ──────────────────────────────────────────────────────────
-         PANE 1: Application Dashboard (Figure 4.5 in Report)
+         PANE 1: Application Dashboard
          ────────────────────────────────────────────────────────── -->
     <section id="pane-home" class="pane active">
 
-      <!-- Hero Welcome Card — matches Figure 4.5 exactly -->
+      <!-- Hero Welcome Card -->
       <div class="card hero-card">
         <div class="label">Software Deployment Project</div>
         <h2>Welcome!</h2>
@@ -108,25 +107,25 @@
       </div>
 
       <div style="display:flex; justify-content:flex-end; margin-top:1.5rem;">
-        <button id="btn-print" class="btn btn-secondary">🖨️ Print Academic Report</button>
+        <button id="btn-print" class="btn btn-secondary">🖨️ Print Report</button>
       </div>
     </section>
 
     <!-- ──────────────────────────────────────────────────────────
-         PANE 2: Chapter 4 Comparative Table (Table 4.3 in Report)
+         PANE 2: Comparative Analysis Table
          ────────────────────────────────────────────────────────── -->
     <section id="pane-table" class="pane">
       <div class="sec-head">
-        <h3>4.3 Comparative Analysis — Manual vs. Automated Deployment</h3>
+        <h3>Comparative Analysis — Manual vs. Automated Deployment</h3>
         <p>
-          The comparison below summarises the operational differences observed from both
-          deployment experiments, as recorded in Chapter 4 (Table 4.3) of the project report.
+          The comparison below summarises the operational differences observed between manual terminal
+          commands and an automated Jenkins CI/CD pipeline across 7 core software engineering parameters.
         </p>
       </div>
 
       <div class="card">
         <div class="card-head">
-          <h3>Table 4.3: Manual vs. Automated Operational Breakdown</h3>
+          <h3>Operational Comparison Breakdown</h3>
         </div>
         <div class="card-body tbl-wrap">
           <table>
@@ -146,12 +145,12 @@
     </section>
 
     <!-- ──────────────────────────────────────────────────────────
-         PANE 3: Live Deployment Runner (interactive demonstration)
+         PANE 3: Live Deployment Runner
          ────────────────────────────────────────────────────────── -->
     <section id="pane-runner" class="pane">
       <div class="sec-head">
         <h3>Real Deployment Execution Console</h3>
-        <p>Execute both deployment routines live, record execution duration, and log each event.</p>
+        <p>Execute both deployment routines live, record execution duration, and inspect the operational breakdown.</p>
       </div>
 
       <div class="runner-bar">
@@ -170,14 +169,14 @@
     </section>
 
     <!-- ──────────────────────────────────────────────────────────
-         PANE 4: Jenkins Pipeline Code (Jenkinsfile — Chapter 3.3)
+         PANE 4: Jenkins Pipeline Code
          ────────────────────────────────────────────────────────── -->
     <section id="pane-pipeline" class="pane">
       <div class="sec-head">
-        <h3>3.3 Jenkins Pipeline Implementation</h3>
+        <h3>Jenkins Pipeline Implementation</h3>
         <p>
           Declarative Jenkinsfile stored at the root of the repository. Jenkins reads this file
-          from GitHub and executes the three stages: Install Dependencies, Deploy Application,
+          from Git and executes the three stages: Install Dependencies, Deploy Application,
           and Verify Deployment.
         </p>
       </div>
@@ -196,9 +195,9 @@
                 dir('deployment-comparison') {
                     script {
                         if (isUnix()) {
-                            sh 'node -v && npm -v && npm install'
+                            sh 'node -v &amp;&amp; npm -v &amp;&amp; npm install'
                         } else {
-                            bat 'node -v && npm -v && npm install'
+                            bat 'node -v &amp;&amp; npm -v &amp;&amp; npm install'
                         }
                     }
                 }
@@ -210,9 +209,9 @@
                 dir('deployment-comparison') {
                     script {
                         if (isUnix()) {
-                            sh 'nohup node server.js > app.log 2>&1 &'
+                            sh 'nohup node server.js > app.log 2>&amp;1 &amp;'
                         } else {
-                            bat 'start /B node server.js > app.log 2>&1'
+                            bat 'start /B node server.js > app.log 2>&amp;1'
                         }
                     }
                 }
@@ -245,7 +244,7 @@
 
     post {
         success {
-            echo "Build Finished: SUCCESS (Ref duration: 8.4 seconds)"
+            echo "Build Finished: SUCCESS"
         }
     }
 }</div>
@@ -322,7 +321,7 @@ curl http://localhost:3000/health</div>
           <div>
             <p style="font-weight:600; color:var(--green-700); margin-bottom:.5rem;">Jenkins Pipeline Stages</p>
             <div class="code-block">stage('Install') { sh 'npm install' }
-stage('Deploy')  { sh 'nohup node server.js &' }
+stage('Deploy')  { sh 'nohup node server.js &amp;' }
 stage('Verify')  { sh 'curl http://localhost:3000/health' }</div>
           </div>
         </div>
@@ -404,7 +403,7 @@ stage('Verify') {
 
   </main>
 
-  <!-- Scripts — benchmark first (defines initDashboard), then live_status, then app coordinator -->
+  <!-- Scripts -->
   <script src="js/benchmark.js"></script>
   <script src="js/live_status.js"></script>
   <script src="js/app.js"></script>

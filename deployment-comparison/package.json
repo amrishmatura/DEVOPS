@@ -1,7 +1,7 @@
 {
   "name": "deployment-comparison",
   "version": "1.0.0",
-  "description": "CSN-452 DevOps: Comparative Study of Manual and Automated Software Deployment",
+  "description": "Comparative Study of Manual and Automated Software Deployment",
   "main": "server.js",
   "scripts": {
     "start": "node server.js"

@@ -1,10 +1,10 @@
 /**
- * DIT University - CSN-452 DevOps Project
+ * Comparative Study of Manual and Automated Software Deployment
  * Benchmark & Dashboard Data Loader
  *
  * Fetches data from the server APIs and renders:
  *  - 5 KPI metric cards  (pane-home  #kpi-grid)
- *  - Table 4.3           (pane-table #chapter4-table-body)
+ *  - Comparison Table    (pane-table #chapter4-table-body)
  *  - Deployment log      (pane-home  #deployment-history-body)
  *  - Telemetry strip     (pane-home  #telemetry-*)
  */
