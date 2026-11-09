@@ -1,121 +1,116 @@
 /**
  * DIT University - CSN-452 DevOps Project
- * Benchmark & Deployment Telemetry Coordinator
+ * Benchmark & Dashboard Data Loader
+ *
+ * Fetches data from the server APIs and renders:
+ *  - 5 KPI metric cards  (pane-home  #kpi-grid)
+ *  - Table 4.3           (pane-table #chapter4-table-body)
+ *  - Deployment log      (pane-home  #deployment-history-body)
+ *  - Telemetry strip     (pane-home  #telemetry-*)
  */
 
+/* ── Entry point (called by app.js after DOMContentLoaded) ─────── */
 async function initDashboard() {
   await Promise.all([
-    loadBenchmarkData(),
-    loadSystemTelemetry(),
+    loadComparisonData(),
+    loadTelemetry(),
     loadDeploymentHistory()
   ]);
 }
 
-async function loadBenchmarkData() {
+/* ── 1. Comparison data — KPI cards + Table 4.3 ────────────────── */
+async function loadComparisonData() {
   try {
-    const res = await fetch('/api/comparison');
+    const res  = await fetch('/api/comparison');
     const data = await res.json();
 
-    renderFiveKPIs(data.metrics5Summary);
-    renderChapter4Table(data.tableComparison);
+    renderKPICards(data.metrics5Summary);
+    renderTable43(data.tableComparison);
   } catch (err) {
-    console.error('Failed to load benchmark comparison:', err);
+    console.error('[benchmark] Failed to load /api/comparison:', err);
   }
 }
 
-function renderFiveKPIs(metrics) {
-  const container = document.getElementById('five-kpis-grid');
-  if (!container || !metrics) return;
+function renderKPICards(metrics) {
+  const grid = document.getElementById('kpi-grid');
+  if (!grid || !metrics) return;
 
-  let html = '';
-  metrics.forEach((m) => {
-    html += `
-      <div class="metric-card">
-        <div class="metric-card-title">${m.name}</div>
-        <div class="metric-card-val">${m.delta}</div>
-        <div class="metric-card-badge">${m.unit}</div>
-        <div class="metric-card-sub">
-          <span>Manual: ${m.manual}</span>
-        </div>
-        <div class="metric-card-sub" style="border:none; margin-top:0.25rem; padding-top:0;">
-          <span style="color: var(--blue-navy); font-weight:600;">Jenkins: ${m.automated}</span>
-        </div>
-      </div>
-    `;
-  });
-
-  container.innerHTML = html;
+  grid.innerHTML = metrics.map(m => `
+    <div class="kpi-card">
+      <div class="kpi-label">${m.name}</div>
+      <div class="kpi-value">${m.delta}</div>
+      <div class="kpi-gain">${m.unit}</div>
+      <hr class="kpi-sep">
+      <div class="kpi-row">Manual: ${m.manual}</div>
+      <div class="kpi-row">Jenkins: <strong>${m.automated}</strong></div>
+    </div>
+  `).join('');
 }
 
-function renderChapter4Table(rows) {
+function renderTable43(rows) {
   const tbody = document.getElementById('chapter4-table-body');
   if (!tbody || !rows) return;
 
-  let html = '';
-  rows.forEach((r) => {
-    html += `
-      <tr>
-        <td style="font-weight: 600; color: var(--blue-navy);">${r.parameter}</td>
-        <td>
-          <span class="table-badge-manual">Manual Run</span>
-          <div>${r.manual}</div>
-        </td>
-        <td>
-          <span class="table-badge-jenkins">Jenkins Automated</span>
-          <div>${r.automated}</div>
-        </td>
-      </tr>
-    `;
-  });
-
-  tbody.innerHTML = html;
+  tbody.innerHTML = rows.map(r => `
+    <tr>
+      <td style="font-weight:600; color:var(--blue-900);">${r.parameter}</td>
+      <td>
+        <span class="badge badge-manual">Manual Run</span>
+        <div>${r.manual}</div>
+      </td>
+      <td>
+        <span class="badge badge-jenkins">Jenkins Automated</span>
+        <div>${r.automated}</div>
+      </td>
+    </tr>
+  `).join('');
 }
 
-async function loadSystemTelemetry() {
+/* ── 2. Live server telemetry strip ─────────────────────────────── */
+async function loadTelemetry() {
   try {
-    const res = await fetch('/api/system-status');
+    const res  = await fetch('/api/system-status');
     const data = await res.json();
 
-    const memEl = document.getElementById('telemetry-mem');
-    const uptimeEl = document.getElementById('telemetry-uptime');
-    const nodeEl = document.getElementById('telemetry-node');
-    const hostEl = document.getElementById('telemetry-host');
-
-    if (memEl) memEl.textContent = `${data.memory.heapUsedMB} MB / ${data.memory.rssMB} MB`;
-    if (uptimeEl) uptimeEl.textContent = `${data.uptimeSeconds}s`;
-    if (nodeEl) nodeEl.textContent = `${data.nodeVersion} (${data.platform})`;
-    if (hostEl) hostEl.textContent = data.hostname;
+    setText('telemetry-node',   `${data.nodeVersion} (${data.platform})`);
+    setText('telemetry-host',   data.hostname);
+    setText('telemetry-uptime', `${data.uptimeSeconds}s`);
+    setText('telemetry-mem',    `${data.memory.heapUsedMB} MB / ${data.memory.rssMB} MB`);
   } catch (err) {
-    console.error('Failed to load telemetry:', err);
+    console.error('[benchmark] Failed to load /api/system-status:', err);
   }
 }
 
+/* ── 3. Deployment audit log ────────────────────────────────────── */
 async function loadDeploymentHistory() {
   try {
-    const res = await fetch('/api/deployments');
+    const res  = await fetch('/api/deployments');
     const data = await res.json();
     const tbody = document.getElementById('deployment-history-body');
     if (!tbody || !data.history) return;
 
-    let html = '';
-    data.history.forEach((d) => {
+    tbody.innerHTML = data.history.map(d => {
       const isJenkins = d.method.includes('Jenkins');
-      html += `
+      return `
         <tr>
-          <td><strong style="font-family: var(--font-mono);">${d.id}</strong></td>
+          <td><strong style="font-family:var(--font-mono);">#${d.id}</strong></td>
           <td>
-            <span class="${isJenkins ? 'table-badge-jenkins' : 'table-badge-manual'}">${d.method}</span>
+            <span class="badge ${isJenkins ? 'badge-jenkins' : 'badge-manual'}">${d.method}</span>
           </td>
-          <td><strong style="font-family: var(--font-mono);">${d.duration}</strong></td>
+          <td><strong style="font-family:var(--font-mono);">${d.duration}</strong></td>
           <td>${d.operator}</td>
-          <td><span style="color: var(--status-green); font-weight: 600;">● ${d.status}</span></td>
+          <td><span class="badge badge-success">● ${d.status}</span></td>
           <td>${d.timestamp}</td>
         </tr>
       `;
-    });
-
-    tbody.innerHTML = html;
+    }).join('');
   } catch (err) {
-    console.error('Failed to load deployment history:', err);
+    console.error('[benchmark] Failed to load /api/deployments:', err);
   }
+}
+
+/* ── Helper ─────────────────────────────────────────────────────── */
+function setText(id, value) {
+  const el = document.getElementById(id);
+  if (el) el.textContent = value;
 }

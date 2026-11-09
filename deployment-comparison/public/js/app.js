@@ -1,41 +1,65 @@
 /**
  * DIT University - CSN-452 DevOps Project
  * Main UI Application Coordinator
+ *
+ * Responsibilities:
+ *  - Tab switching (all 5 panes)
+ *  - Wires run/print buttons to live_status.js and benchmark.js functions
+ *  - Calls initDashboard() on load (defined in benchmark.js)
  */
 
 document.addEventListener('DOMContentLoaded', () => {
   setupTabs();
+  setupActionButtons();
+
+  // Load all dashboard data once the DOM is ready
   if (typeof initDashboard === 'function') {
     initDashboard();
   }
-  setupActionButtons();
 });
 
+/* ── Tab switching ─────────────────────────────────────────────── */
 function setupTabs() {
-  const tabs = document.querySelectorAll('.nav-tab-btn');
-  const panes = document.querySelectorAll('.tab-content');
+  const buttons = document.querySelectorAll('.tab-btn');
+  const panes   = document.querySelectorAll('.pane');
 
-  tabs.forEach(tab => {
-    tab.addEventListener('click', () => {
-      const targetId = tab.getAttribute('data-tab');
+  buttons.forEach(btn => {
+    btn.addEventListener('click', () => {
+      const target = btn.getAttribute('data-tab');
 
-      tabs.forEach(t => t.classList.remove('active'));
+      // Deactivate all tabs and panes
+      buttons.forEach(b => b.classList.remove('active'));
       panes.forEach(p => p.classList.remove('active'));
 
-      tab.classList.add('active');
-      const targetPane = document.getElementById(targetId);
-      if (targetPane) targetPane.classList.add('active');
+      // Activate the clicked tab and its corresponding pane
+      btn.classList.add('active');
+      const pane = document.getElementById(target);
+      if (pane) pane.classList.add('active');
     });
   });
 }
 
+/* ── Action buttons ─────────────────────────────────────────────── */
 function setupActionButtons() {
-  const manualBtn = document.getElementById('btn-manual-deploy');
-  if (manualBtn) manualBtn.addEventListener('click', executeManualRun);
+  // Manual deployment runner (defined in live_status.js)
+  const btnManual = document.getElementById('btn-manual');
+  if (btnManual) {
+    btnManual.addEventListener('click', () => {
+      if (typeof executeManualRun === 'function') executeManualRun();
+    });
+  }
 
-  const jenkinsBtn = document.getElementById('btn-jenkins-deploy');
-  if (jenkinsBtn) jenkinsBtn.addEventListener('click', executeJenkinsRun);
+  // Jenkins pipeline runner (defined in live_status.js)
+  const btnJenkins = document.getElementById('btn-jenkins');
+  if (btnJenkins) {
+    btnJenkins.addEventListener('click', () => {
+      if (typeof executeJenkinsRun === 'function') executeJenkinsRun();
+    });
+  }
 
-  const printBtn = document.getElementById('btn-print-doc');
-  if (printBtn) printBtn.addEventListener('click', () => window.print());
+  // Print academic report
+  const btnPrint = document.getElementById('btn-print');
+  if (btnPrint) {
+    btnPrint.addEventListener('click', () => window.print());
+  }
 }

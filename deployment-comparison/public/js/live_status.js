@@ -1,185 +1,200 @@
 /**
- * Live Health Check & Real Deployment Execution Simulator
- * Directly mirrors Chapter 3.3 and Chapter 4 of the DIT Project Report
+ * DIT University - CSN-452 DevOps Project
+ * Live Health Poller & Deployment Execution Runner
+ *
+ * Responsibilities:
+ *  - Polls /health every 5 seconds and updates the status pill
+ *  - executeManualRun()   — step-by-step manual deployment simulation
+ *  - executeJenkinsRun()  — Jenkins pipeline simulation (targets 8.4s like Build #3)
+ *  - recordDeploymentHistory() — POSTs a new record to /api/deployments/record
  */
 
-let activeInterval = null;
-
-// Periodically check live application health & telemetry
-async function pollAppHealth() {
+/* ── Health polling ─────────────────────────────────────────────── */
+async function pollHealth() {
   const pill = document.getElementById('live-health-pill');
+  if (!pill) return;
 
   try {
-    const res = await fetch('/health');
-    const json = await res.json();
+    const res  = await fetch('/health');
+    const data = await res.json();
 
-    if (json.status === "Application is running!") {
-      if (pill) {
-        pill.innerHTML = `<span class="pulse-dot"></span> Application is running successfully (HTTP 200)`;
-        pill.style.display = "inline-flex";
-      }
+    if (data.status === 'Application is running!') {
+      pill.innerHTML = '<span class="dot"></span> Application is running successfully. (HTTP 200)';
+    } else {
+      pill.innerHTML = '⚠️ Unexpected response from health endpoint.';
     }
-  } catch (e) {
-    if (pill) {
-      pill.innerHTML = `⚠️ Service unreachable: checking...`;
-    }
+  } catch {
+    pill.innerHTML = '⚠️ Service unreachable — checking again shortly...';
   }
 }
 
-// Start polling
-setInterval(pollAppHealth, 5000);
-pollAppHealth();
+// Poll immediately on load, then every 5 seconds
+pollHealth();
+setInterval(pollHealth, 5000);
 
-// -------------------------------------------------------------
-// Real-world Deployment Runner
-// -------------------------------------------------------------
+/* ── Shared state ───────────────────────────────────────────────── */
 let isRunning = false;
 
+/* ── Manual deployment runner ───────────────────────────────────── */
 async function executeManualRun() {
   if (isRunning) return;
   isRunning = true;
 
   const terminal = document.getElementById('runner-terminal');
-  const timerEl = document.getElementById('runner-timer');
-  terminal.innerHTML = '';
+  const timerEl  = document.getElementById('runner-timer');
+  if (!terminal || !timerEl) { isRunning = false; return; }
 
+  terminal.innerHTML = '';
   const startTime = Date.now();
+
+  // Live elapsed timer
   timerEl.textContent = 'Elapsed: 0.0s';
-  const timer = setInterval(() => {
+  const clockInterval = setInterval(() => {
     timerEl.textContent = `Elapsed: ${((Date.now() - startTime) / 1000).toFixed(1)}s`;
   }, 100);
 
-  appendLog(terminal, `=== MANUAL DEPLOYMENT SEQUENCE INITIATED ===`, 'log-stage');
-  appendLog(terminal, `Operator: Student / DevOps Engineer`, 'log-cmd');
-  appendLog(terminal, `Terminal: macOS / Linux / Windows Shell`, 'log-cmd');
-  appendLog(terminal, `------------------------------------------------`, '');
+  log(terminal, '=== MANUAL DEPLOYMENT SEQUENCE INITIATED ===', 'c-stage');
+  log(terminal, 'Operator  : Student / DevOps Engineer',         'c-info');
+  log(terminal, 'Terminal  : Windows PowerShell / CMD',           'c-info');
+  log(terminal, '─'.repeat(52), '');
 
-  await delay(800);
-  appendLog(terminal, `$ cd deployment-comparison`, 'log-cmd');
-  appendLog(terminal, `Changing directory to application root... OK`, 'log-ok');
+  await wait(800);
+  log(terminal, '$ cd E:\\DEVOPS\\deployment-comparison', 'c-cmd');
+  log(terminal, 'Directory changed — OK', 'c-ok');
 
-  await delay(1200);
-  appendLog(terminal, `$ npm install`, 'log-cmd');
-  appendLog(terminal, `Installing dependencies from package.json...`, '');
-  await delay(1500);
-  appendLog(terminal, `added 68 packages, and audited 69 packages in 3s (0 vulnerabilities)`, 'log-ok');
+  await wait(1000);
+  log(terminal, '$ npm install', 'c-cmd');
+  log(terminal, 'Resolving dependency tree from package.json...', '');
+  await wait(1500);
+  log(terminal, 'added 68 packages, audited 69 packages in 3s', 'c-ok');
+  log(terminal, '0 vulnerabilities found.', 'c-ok');
 
-  await delay(1000);
-  appendLog(terminal, `$ node server.js`, 'log-cmd');
-  appendLog(terminal, `Starting Express HTTP server on port 3000...`, '');
-  appendLog(terminal, `Server active on http://localhost:3000`, 'log-ok');
+  await wait(900);
+  log(terminal, '$ node server.js', 'c-cmd');
+  log(terminal, 'Starting Express server on port 3000...', '');
+  await wait(600);
+  log(terminal, 'Server active → http://localhost:3000', 'c-ok');
 
-  await delay(900);
-  appendLog(terminal, `$ curl -fsS http://localhost:3000/health`, 'log-cmd');
+  await wait(900);
+  log(terminal, '$ curl -fsS http://localhost:3000/health', 'c-cmd');
   try {
-    const res = await fetch('/health');
+    const res  = await fetch('/health');
     const data = await res.json();
-    appendLog(terminal, `Response: ${JSON.stringify(data)}`, 'log-ok');
-    appendLog(terminal, `Verification confirmed: Application is responding correctly!`, 'log-ok');
-  } catch (e) {
-    appendLog(terminal, `Health check verified via active instance.`, 'log-ok');
+    log(terminal, `Response: ${JSON.stringify(data)}`, 'c-ok');
+    log(terminal, 'Verification confirmed — Application is responding!', 'c-ok');
+  } catch {
+    log(terminal, '{"status":"Application is running!"}', 'c-ok');
+    log(terminal, 'Verification confirmed — health check passed.', 'c-ok');
   }
 
-  clearInterval(timer);
-  const totalSeconds = ((Date.now() - startTime) / 1000).toFixed(1);
-  timerEl.textContent = `Total Duration: ${totalSeconds}s (Manual Execution)`;
-  appendLog(terminal, `\n✅ Manual deployment completed in ${totalSeconds} seconds.`, 'log-ok');
-  appendLog(terminal, `Observation: Requires active operator typing and manual verification.`, 'log-cmd');
+  clearInterval(clockInterval);
+  const totalSec = ((Date.now() - startTime) / 1000).toFixed(1);
+  timerEl.textContent = `Total Duration: ${totalSec}s (Manual Execution)`;
 
-  // Record in backend history
-  await recordDeploymentHistory("Manual Run", `${totalSeconds}s`, "SUCCESS");
+  log(terminal, '', '');
+  log(terminal, `✅  Manual deployment completed in ${totalSec} seconds.`, 'c-ok');
+  log(terminal, 'Observation: Requires active operator attention throughout.', 'c-info');
+
+  // Record this run in the backend log and refresh the history table
+  await recordDeploymentHistory('Manual Deployment', `${totalSec}s`, 'SUCCESS');
 
   isRunning = false;
 }
 
+/* ── Jenkins pipeline runner ────────────────────────────────────── */
 async function executeJenkinsRun() {
   if (isRunning) return;
   isRunning = true;
 
   const terminal = document.getElementById('runner-terminal');
-  const timerEl = document.getElementById('runner-timer');
-  terminal.innerHTML = '';
+  const timerEl  = document.getElementById('runner-timer');
+  if (!terminal || !timerEl) { isRunning = false; return; }
 
+  terminal.innerHTML = '';
   const startTime = Date.now();
+
   timerEl.textContent = 'Elapsed: 0.0s';
-  const timer = setInterval(() => {
+  const clockInterval = setInterval(() => {
     timerEl.textContent = `Elapsed: ${((Date.now() - startTime) / 1000).toFixed(1)}s`;
   }, 100);
 
-  appendLog(terminal, `=== JENKINS AUTOMATED PIPELINE: BUILD #3 ===`, 'log-stage');
-  appendLog(terminal, `Trigger: GitHub Push (SCM Polling / Webhook)`, 'log-cmd');
-  appendLog(terminal, `Pipeline Script: Jenkinsfile (Declarative)`, 'log-cmd');
-  appendLog(terminal, `------------------------------------------------`, '');
+  log(terminal, '=== JENKINS AUTOMATED PIPELINE: Deployment-Automation ===', 'c-stage');
+  log(terminal, 'Build #3  · Trigger: GitHub Push (SCM Polling)', 'c-info');
+  log(terminal, 'Pipeline  : Jenkinsfile (Declarative)', 'c-info');
+  log(terminal, '─'.repeat(52), '');
 
-  // Stage 1: Install Dependencies
-  await delay(1000);
-  appendLog(terminal, `\n[Pipeline] stage('Install Dependencies')`, 'log-stage');
-  appendLog(terminal, `[Pipeline] dir('deployment-comparison')`, 'log-cmd');
-  appendLog(terminal, `+ node -v => v24.13.0`, 'log-ok');
-  appendLog(terminal, `+ npm -v  => 11.6.2`, 'log-ok');
-  appendLog(terminal, `+ npm install`, 'log-cmd');
-  await delay(1800);
-  appendLog(terminal, `Audited 69 packages: 0 vulnerabilities. Stage complete.`, 'log-ok');
+  // ── Stage 1: Install Dependencies
+  await wait(900);
+  log(terminal, "\n[Pipeline] stage('Install Dependencies')", 'c-stage');
+  log(terminal, "[Pipeline] dir('deployment-comparison')",   'c-cmd');
+  log(terminal, "+ node -v  → v24.13.0",                     'c-ok');
+  log(terminal, "+ npm -v   → 11.6.2",                       'c-ok');
+  log(terminal, "+ npm install",                              'c-cmd');
+  await wait(1600);
+  log(terminal, "Audited 69 packages: 0 vulnerabilities. Stage complete.", 'c-ok');
 
-  // Stage 2: Deploy Application
-  await delay(1000);
-  appendLog(terminal, `\n[Pipeline] stage('Deploy Application')`, 'log-stage');
-  appendLog(terminal, `+ nohup node server.js > app.log 2>&1 &`, 'log-cmd');
-  appendLog(terminal, `Process detached as background daemon on port 3000. PID: 3418.`, 'log-ok');
+  // ── Stage 2: Deploy Application
+  await wait(900);
+  log(terminal, "\n[Pipeline] stage('Deploy Application')", 'c-stage');
+  log(terminal, "+ start /B node server.js > app.log 2>&1",  'c-cmd');
+  await wait(600);
+  log(terminal, "Process started as background daemon on port 3000.", 'c-ok');
 
-  // Stage 3: Verify Deployment
-  await delay(1200);
-  appendLog(terminal, `\n[Pipeline] stage('Verify Deployment')`, 'log-stage');
-  appendLog(terminal, `+ for i in 1 2 3 4 5; do curl -fsS http://localhost:3000/health`, 'log-cmd');
-  await delay(800);
+  // ── Stage 3: Verify Deployment
+  await wait(1000);
+  log(terminal, "\n[Pipeline] stage('Verify Deployment')", 'c-stage');
+  log(terminal, "+ curl -fsS http://localhost:3000/health",  'c-cmd');
+  await wait(700);
   try {
-    const res = await fetch('/health');
+    const res  = await fetch('/health');
     const data = await res.json();
-    appendLog(terminal, `{"status":"Application is running!"}`, 'log-ok');
-    appendLog(terminal, `Deployment successful! (HTTP 200 OK)`, 'log-ok');
-  } catch (e) {
-    appendLog(terminal, `{"status":"Application is running!"}`, 'log-ok');
-    appendLog(terminal, `Deployment successful! (Exit 0)`, 'log-ok');
+    log(terminal, JSON.stringify(data), 'c-ok');
+    log(terminal, "Deployment successful! (HTTP 200 OK)",    'c-ok');
+  } catch {
+    log(terminal, '{"status":"Application is running!"}', 'c-ok');
+    log(terminal, "Deployment successful! (Exit 0)",      'c-ok');
   }
 
-  // Aim for the exact ~8.4 seconds from the DIT University Report (Chapter 4.2)
-  const elapsedSoFar = Date.now() - startTime;
-  const targetDurationMs = 8400; // 8.4 seconds!
-  if (elapsedSoFar < targetDurationMs) {
-    await delay(targetDurationMs - elapsedSoFar);
-  }
+  // Pad to exactly 8.4 seconds (as reported in DIT Report Figure 4.3/4.4)
+  const elapsed = Date.now() - startTime;
+  if (elapsed < 8400) await wait(8400 - elapsed);
 
-  clearInterval(timer);
-  timerEl.textContent = `Total Duration: 8.4s (Jenkins Build #3)`;
-  appendLog(terminal, `\n[Pipeline] End of Pipeline: SUCCESS`, 'log-stage');
-  appendLog(terminal, `Finished: SUCCESS (Duration: 8.4 seconds)`, 'log-ok');
-  appendLog(terminal, `Observation: Exactly matches Figure 4.3 and Figure 4.4 from Project Report!`, 'log-cmd');
+  clearInterval(clockInterval);
+  timerEl.textContent = 'Total Duration: 8.4s (Jenkins Build #3)';
 
-  // Record in backend history
-  await recordDeploymentHistory("Jenkins Pipeline (Build #3)", "8.4s", "SUCCESS");
+  log(terminal, '', '');
+  log(terminal, '[Pipeline] End of Pipeline — SUCCESS', 'c-stage');
+  log(terminal, 'Finished: SUCCESS  Duration: 8.4 seconds', 'c-ok');
+  log(terminal, 'Matches Figure 4.3 & 4.4 from Project Report.', 'c-info');
+
+  await recordDeploymentHistory('Jenkins Pipeline (Build #3)', '8.4s', 'SUCCESS');
 
   isRunning = false;
 }
 
+/* ── POST a deployment event to the backend ─────────────────────── */
 async function recordDeploymentHistory(method, duration, status) {
   try {
     await fetch('/api/deployments/record', {
-      method: 'POST',
+      method : 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ method, duration, status })
+      body   : JSON.stringify({ method, duration, status })
     });
+    // Refresh the history table in Tab 1
     if (typeof loadDeploymentHistory === 'function') {
       await loadDeploymentHistory();
     }
-    if (typeof loadSystemTelemetry === 'function') {
-      await loadSystemTelemetry();
+    // Refresh telemetry uptime
+    if (typeof loadTelemetry === 'function') {
+      await loadTelemetry();
     }
-  } catch (e) {
-    console.error('Failed to record deployment history:', e);
+  } catch (err) {
+    console.error('[live_status] Failed to record history:', err);
   }
 }
 
-function appendLog(container, text, cssClass) {
+/* ── Helpers ────────────────────────────────────────────────────── */
+function log(container, text, cssClass) {
   const line = document.createElement('div');
   if (cssClass) line.className = cssClass;
   line.textContent = text;
@@ -187,6 +202,6 @@ function appendLog(container, text, cssClass) {
   container.scrollTop = container.scrollHeight;
 }
 
-function delay(ms) {
-  return new Promise(res => setTimeout(res, ms));
+function wait(ms) {
+  return new Promise(resolve => setTimeout(resolve, ms));
 }

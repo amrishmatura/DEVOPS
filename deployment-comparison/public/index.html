@@ -3,364 +3,411 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Comparative Study of Manual and Automated Software Deployment</title>
+  <title>Comparative Study of Manual and Automated Software Deployment — CSN-452</title>
   <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
 
-  <!-- Academic Header -->
-  <header class="top-header">
-    <div class="header-inner">
-      <span class="inst-badge">DIT University • School of Computing • CSN-452 DevOps</span>
-      <h1 class="main-title">Comparative Study of Manual and Automated Software Deployment</h1>
-      <p class="main-desc">
-        A comparative evaluation demonstrating manual terminal deployment versus a Jenkins-based automated CI/CD pipeline for a Node.js Express application across execution time, human effort, error rate, failure frequency, and recovery velocity.
+  <!-- ══════════════════════════════════════════════════════════════
+       MASTHEAD — Academic Header (matches report title page)
+       ══════════════════════════════════════════════════════════════ -->
+  <header class="masthead">
+    <div class="masthead-inner">
+      <span class="chip">DIT University · School of Computing · CSN-452 DevOps</span>
+      <h1>Comparative Study of Manual and<br>Automated Software Deployment</h1>
+      <p>
+        A comparative evaluation of manual terminal deployment versus a Jenkins-based
+        automated CI/CD pipeline for a Node.js Express application, measuring deployment
+        time, human effort, error rate, failure frequency, and recovery velocity.
       </p>
-
-      <div class="header-meta">
+      <div class="masthead-meta">
         <div>Course: <strong>CSN-452 (DevOps)</strong></div>
         <div>Guide: <strong>Mrs. Suchi Johari</strong></div>
-        <div>Submitted By: <strong>Hemant Sharma & Sakshi Patel</strong></div>
-        <div>Health Verification: <strong><a href="/health" target="_blank" style="color:#60a5fa; text-decoration: underline;">/health (HTTP 200)</a></strong></div>
+        <div>Submitted by: <strong>Hemant Sharma &amp; Sakshi Patel</strong></div>
+        <div>Health Endpoint: <strong><a href="/health" target="_blank">/health → HTTP 200</a></strong></div>
       </div>
     </div>
   </header>
 
-  <!-- Navigation Bar -->
-  <nav class="nav-bar print-hide">
-    <div class="nav-inner">
-      <button class="nav-tab-btn active" data-tab="tab-home">1. Application Dashboard</button>
-      <button class="nav-tab-btn" data-tab="tab-table">2. Chapter 4 Comparative Table</button>
-      <button class="nav-tab-btn" data-tab="tab-runner">3. Live Deployment Runner</button>
-      <button class="nav-tab-btn" data-tab="tab-pipeline">4. Jenkins Pipeline Code</button>
-      <button class="nav-tab-btn" data-tab="tab-projects">5. Project Extensibility Guide</button>
+  <!-- ══════════════════════════════════════════════════════════════
+       NAVIGATION TABS
+       ══════════════════════════════════════════════════════════════ -->
+  <nav class="tab-nav">
+    <div class="tab-nav-inner">
+      <button class="tab-btn active" data-tab="pane-home">1. Application Dashboard</button>
+      <button class="tab-btn" data-tab="pane-table">2. Chapter 4 Comparative Table</button>
+      <button class="tab-btn" data-tab="pane-runner">3. Live Deployment Runner</button>
+      <button class="tab-btn" data-tab="pane-pipeline">4. Jenkins Pipeline Code</button>
+      <button class="tab-btn" data-tab="pane-guide">5. Project Extensibility Guide</button>
     </div>
   </nav>
 
-  <!-- Main Container -->
-  <main class="container">
+  <!-- ══════════════════════════════════════════════════════════════
+       MAIN CONTENT
+       ══════════════════════════════════════════════════════════════ -->
+  <main class="main">
 
-    <!-- ======================================================================
-         TAB 1: Application Dashboard (Figure 4.5 in Report)
-         ====================================================================== -->
-    <section id="tab-home" class="tab-content active">
+    <!-- ──────────────────────────────────────────────────────────
+         PANE 1: Application Dashboard (Figure 4.5 in Report)
+         ────────────────────────────────────────────────────────── -->
+    <section id="pane-home" class="pane active">
 
-      <!-- Hero Banner (Directly matches Figure 4.5 from the DIT Project Report) -->
-      <div class="hero-banner-card">
-        <h2>Software Deployment Project</h2>
-        <div class="hero-welcome">Welcome!</div>
-        <div class="hero-project">Comparative Study of Manual and Automated Software Deployment</div>
-        <div style="margin-top: 1rem;">
-          <span id="live-health-pill" class="hero-status-pill">
-            <span class="pulse-dot"></span> Application is running successfully.
-          </span>
-        </div>
+      <!-- Hero Welcome Card — matches Figure 4.5 exactly -->
+      <div class="card hero-card">
+        <div class="label">Software Deployment Project</div>
+        <h2>Welcome!</h2>
+        <div class="subtitle">Comparative Study of Manual and Automated Software Deployment</div>
+        <span id="live-health-pill" class="status-pill">
+          <span class="dot"></span>
+          Application is running successfully.
+        </span>
       </div>
 
-      <!-- Real Server Telemetry Bar -->
-      <div style="background-color: var(--bg-card); border: 1px solid var(--border-light); border-radius: 8px; padding: 1rem 1.5rem; margin-bottom: 2rem; box-shadow: var(--shadow-sm); display: flex; flex-wrap: wrap; justify-content: space-between; gap: 1rem; font-size: 0.88rem;">
-        <div>Runtime: <strong id="telemetry-node" style="color: var(--blue-navy);">Node.js</strong></div>
-        <div>Host: <strong id="telemetry-host" style="color: var(--blue-navy);">Localhost</strong></div>
-        <div>Uptime: <strong id="telemetry-uptime" style="color: var(--status-green);">--</strong></div>
-        <div>Memory (Heap / RSS): <strong id="telemetry-mem" style="color: var(--blue-primary);">--</strong></div>
-        <div>Health Endpoint: <strong style="color: var(--status-green);">/health (200 OK)</strong></div>
+      <!-- Live Server Telemetry Bar -->
+      <div class="telemetry-strip">
+        <div class="tel-item">Runtime: <strong id="telemetry-node">Node.js</strong></div>
+        <div class="tel-item">Host: <strong id="telemetry-host">localhost</strong></div>
+        <div class="tel-item">Uptime: <strong id="telemetry-uptime">—</strong></div>
+        <div class="tel-item">Memory (Heap / RSS): <strong id="telemetry-mem">—</strong></div>
+        <div class="tel-item">Health Endpoint: <strong style="color:var(--green-700);">/health (200 OK)</strong></div>
       </div>
 
-      <!-- 5 Foundational Metrics Summary -->
-      <div style="margin-bottom: 1.25rem;">
-        <h3 style="font-family: var(--font-serif); font-size: 1.4rem; color: var(--blue-navy); margin-bottom: 0.35rem;">
-          Core Research Metrics (5 Key Dimensions)
-        </h3>
-        <p style="color: var(--text-muted); font-size: 0.92rem;">
-          Empirical comparison between manual execution and automated continuous delivery.
-        </p>
+      <!-- 5 Core Research KPI Cards -->
+      <div class="sec-head">
+        <h3>Core Research Metrics — 5 Key Dimensions</h3>
+        <p>Empirical comparison between manual execution and automated continuous delivery.</p>
       </div>
 
-      <div id="five-kpis-grid" class="metrics-grid">
-        <!-- Dynamically rendered by benchmark.js -->
+      <div id="kpi-grid" class="kpi-grid">
+        <!-- Populated dynamically by benchmark.js -->
       </div>
 
-      <!-- Live Deployment History Log Table -->
-      <div class="card-table-wrap">
-        <div class="card-table-header" style="display:flex; justify-content:space-between; align-items:center;">
+      <!-- Deployment Audit Log -->
+      <div class="card">
+        <div class="card-head" style="display:flex; justify-content:space-between; align-items:center;">
           <h3>Recent Deployment Events (Audit Log)</h3>
-          <span style="font-size: 0.82rem; color: var(--text-muted);">Real-time in-memory telemetry</span>
+          <span style="font-size:.82rem; color:var(--grey-400);">Real-time in-memory telemetry</span>
         </div>
-        <table class="report-table">
-          <thead>
-            <tr>
-              <th>ID</th>
-              <th>Method</th>
-              <th>Duration</th>
-              <th>Triggered By</th>
-              <th>Status</th>
-              <th>Timestamp</th>
-            </tr>
-          </thead>
-          <tbody id="deployment-history-body">
-            <!-- Dynamically populated by benchmark.js -->
-          </tbody>
-        </table>
+        <div class="card-body tbl-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Method</th>
+                <th>Duration</th>
+                <th>Triggered By</th>
+                <th>Status</th>
+                <th>Timestamp</th>
+              </tr>
+            </thead>
+            <tbody id="deployment-history-body">
+              <!-- Populated dynamically by benchmark.js -->
+            </tbody>
+          </table>
+        </div>
       </div>
 
-      <div style="display: flex; justify-content: flex-end; margin-top: 1.5rem;" class="print-hide">
-        <button id="btn-print-doc" class="btn btn-outline">🖨️ Print Academic Report</button>
+      <div style="display:flex; justify-content:flex-end; margin-top:1.5rem;">
+        <button id="btn-print" class="btn btn-secondary">🖨️ Print Academic Report</button>
       </div>
     </section>
 
-    <!-- ======================================================================
-         TAB 2: Chapter 4.3 Comparative Table (Page 16 in Report)
-         ====================================================================== -->
-    <section id="tab-table" class="tab-content">
-      <div style="margin-bottom: 1.5rem;">
-        <h3 style="font-family: var(--font-serif); font-size: 1.5rem; color: var(--blue-navy); margin-bottom: 0.4rem;">
-          4.3 Comparative Analysis
-        </h3>
-        <p style="color: var(--text-muted); font-size: 0.95rem;">
-          The comparison below summarizes the expected operational differences recorded from the experiment (Project Report Chapter 4, Table 4.3).
+    <!-- ──────────────────────────────────────────────────────────
+         PANE 2: Chapter 4 Comparative Table (Table 4.3 in Report)
+         ────────────────────────────────────────────────────────── -->
+    <section id="pane-table" class="pane">
+      <div class="sec-head">
+        <h3>4.3 Comparative Analysis — Manual vs. Automated Deployment</h3>
+        <p>
+          The comparison below summarises the operational differences observed from both
+          deployment experiments, as recorded in Chapter 4 (Table 4.3) of the project report.
         </p>
       </div>
 
-      <div class="card-table-wrap">
-        <div class="card-table-header">
+      <div class="card">
+        <div class="card-head">
           <h3>Table 4.3: Manual vs. Automated Operational Breakdown</h3>
         </div>
-        <table class="report-table">
-          <thead>
-            <tr>
-              <th style="width: 25%;">Parameter</th>
-              <th style="width: 37%;">Manual Deployment</th>
-              <th style="width: 38%;">Automated Deployment</th>
-            </tr>
-          </thead>
-          <tbody id="chapter4-table-body">
-            <!-- Dynamically populated by benchmark.js -->
-          </tbody>
-        </table>
+        <div class="card-body tbl-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th style="width:22%;">Parameter</th>
+                <th style="width:39%;">Manual Deployment</th>
+                <th style="width:39%;">Automated Deployment (Jenkins)</th>
+              </tr>
+            </thead>
+            <tbody id="chapter4-table-body">
+              <!-- Populated dynamically by benchmark.js -->
+            </tbody>
+          </table>
+        </div>
       </div>
     </section>
 
-    <!-- ======================================================================
-         TAB 3: Live Real-World Deployment Runner
-         ====================================================================== -->
-    <section id="tab-runner" class="tab-content">
-      <div style="margin-bottom: 1.5rem;">
-        <h3 style="font-family: var(--font-serif); font-size: 1.5rem; color: var(--blue-navy); margin-bottom: 0.4rem;">
-          Real Deployment Execution Console
-        </h3>
-        <p style="color: var(--text-muted); font-size: 0.95rem;">
-          Execute both deployment routines live on this machine, record the execution duration, and log the event.
-        </p>
+    <!-- ──────────────────────────────────────────────────────────
+         PANE 3: Live Deployment Runner (interactive demonstration)
+         ────────────────────────────────────────────────────────── -->
+    <section id="pane-runner" class="pane">
+      <div class="sec-head">
+        <h3>Real Deployment Execution Console</h3>
+        <p>Execute both deployment routines live, record execution duration, and log each event.</p>
       </div>
 
-      <div class="runner-panel">
-        <div class="runner-actions">
-          <button id="btn-manual-deploy" class="btn btn-outline">▶ Execute Manual Deployment Run</button>
-          <button id="btn-jenkins-deploy" class="btn btn-navy">⚡ Execute Jenkins Pipeline (Build #3)</button>
-          <span id="runner-timer" style="font-family: var(--font-mono); font-weight: 600; color: var(--blue-navy); margin-left: auto;">
-            Ready to execute
-          </span>
-        </div>
+      <div class="runner-bar">
+        <button id="btn-manual" class="btn btn-secondary">▶ Execute Manual Deployment</button>
+        <button id="btn-jenkins" class="btn btn-primary">⚡ Execute Jenkins Pipeline (Build #3)</button>
+        <span id="runner-timer" class="timer-label">Ready to execute</span>
       </div>
 
-      <div class="terminal-window">
-        <div class="terminal-titlebar">
+      <div class="terminal">
+        <div class="terminal-title">
           <span>Terminal Execution Console</span>
-          <span>Target: Node.js Express (Port 3000)</span>
+          <span>Target: Node.js Express · Port 3000</span>
         </div>
-        <div id="runner-terminal" class="terminal-logs">
-// Click "Execute Manual Deployment Run" or "Execute Jenkins Pipeline" above to see the live deployment steps.
-        </div>
+        <div id="runner-terminal" class="terminal-body">// Click a button above to start the deployment runner.</div>
       </div>
     </section>
 
-    <!-- ======================================================================
-         TAB 4: Jenkins Pipeline Code & Architecture (Page 13-14 in Report)
-         ====================================================================== -->
-    <section id="tab-pipeline" class="tab-content">
-      <div style="margin-bottom: 1.5rem;">
-        <h3 style="font-family: var(--font-serif); font-size: 1.5rem; color: var(--blue-navy); margin-bottom: 0.4rem;">
-          3.3 Jenkins Pipeline Implementation
-        </h3>
-        <p style="color: var(--text-muted); font-size: 0.95rem;">
-          The Declarative Jenkinsfile defined in the repository with three stages: Install Dependencies, Deploy Application, and Verify Deployment.
+    <!-- ──────────────────────────────────────────────────────────
+         PANE 4: Jenkins Pipeline Code (Jenkinsfile — Chapter 3.3)
+         ────────────────────────────────────────────────────────── -->
+    <section id="pane-pipeline" class="pane">
+      <div class="sec-head">
+        <h3>3.3 Jenkins Pipeline Implementation</h3>
+        <p>
+          Declarative Jenkinsfile stored at the root of the repository. Jenkins reads this file
+          from GitHub and executes the three stages: Install Dependencies, Deploy Application,
+          and Verify Deployment.
         </p>
       </div>
 
-      <div class="code-box">
-pipeline {
+      <div class="card">
+        <div class="card-head">
+          <h3>Jenkinsfile — Declarative Pipeline (3 Stages)</h3>
+        </div>
+        <div class="card-body">
+          <div class="code-block">pipeline {
     agent any
 
     stages {
         stage('Install Dependencies') {
-            environment {
-                PATH = "/opt/homebrew/bin:${env.PATH}"
-            }
             steps {
                 dir('deployment-comparison') {
-                    sh '''
-                        node -v
-                        npm -v
-                        npm install
-                    '''
+                    script {
+                        if (isUnix()) {
+                            sh 'node -v && npm -v && npm install'
+                        } else {
+                            bat 'node -v && npm -v && npm install'
+                        }
+                    }
                 }
             }
         }
 
         stage('Deploy Application') {
-            environment {
-                PATH = "/opt/homebrew/bin:${env.PATH}"
-            }
             steps {
                 dir('deployment-comparison') {
-                    sh '''
-                        nohup node server.js > app.log 2>&1 &
-                    '''
+                    script {
+                        if (isUnix()) {
+                            sh 'nohup node server.js > app.log 2>&1 &'
+                        } else {
+                            bat 'start /B node server.js > app.log 2>&1'
+                        }
+                    }
                 }
             }
         }
 
         stage('Verify Deployment') {
             steps {
-                sh '''
-                    for i in 1 2 3 4 5; do
-                        if curl -fsS http://localhost:3000/health; then
-                            echo "Deployment successful!"
-                            exit 0
-                        fi
-                        sleep 2
-                    done
-                    echo "Deployment failed!"
-                    exit 1
-                '''
+                script {
+                    if (isUnix()) {
+                        sh '''
+                            for i in 1 2 3 4 5; do
+                                if curl -fsS http://localhost:3000/health; then
+                                    echo "Deployment successful!"
+                                    exit 0
+                                fi
+                                sleep 2
+                            done
+                            exit 1
+                        '''
+                    } else {
+                        bat '''
+                            powershell -Command "for ($i=1; $i -le 5; $i++) { try { $r = Invoke-RestMethod http://localhost:3000/health; if ($r.status -like '*running*') { Write-Host 'Deployment successful!'; exit 0 } } catch {}; Start-Sleep 2 }; exit 1"
+                        '''
+                    }
+                }
             }
         }
     }
-}
+
+    post {
+        success {
+            echo "Build Finished: SUCCESS (Ref duration: 8.4 seconds)"
+        }
+    }
+}</div>
+        </div>
+      </div>
+
+      <!-- Manual deployment workflow steps -->
+      <div class="sec-head" style="margin-top:2rem;">
+        <h3>Manual Deployment Workflow</h3>
+        <p>Equivalent steps performed by the operator in a terminal session.</p>
+      </div>
+
+      <div class="flow-steps">
+        <div class="flow-step">
+          <div class="step-num">1</div>
+          <div class="step-body">
+            <strong>Open Terminal &amp; Navigate</strong>
+            <span>Change directory to the application folder.</span>
+            <code>cd E:\DEVOPS\deployment-comparison</code>
+          </div>
+        </div>
+        <div class="flow-step">
+          <div class="step-num">2</div>
+          <div class="step-body">
+            <strong>Install Dependencies</strong>
+            <span>Install Node.js packages defined in package.json.</span>
+            <code>npm install</code>
+          </div>
+        </div>
+        <div class="flow-step">
+          <div class="step-num">3</div>
+          <div class="step-body">
+            <strong>Start the Server</strong>
+            <span>Launch the Express application on port 3000.</span>
+            <code>node server.js</code>
+          </div>
+        </div>
+        <div class="flow-step">
+          <div class="step-num">4</div>
+          <div class="step-body">
+            <strong>Verify Deployment</strong>
+            <span>Send a health check request to confirm the server is responding.</span>
+            <code>curl http://localhost:3000/health</code>
+          </div>
+        </div>
       </div>
     </section>
 
-    <!-- ======================================================================
-         TAB 5: What Other Projects Can You Deploy in Manual vs. Jenkins?
-         ====================================================================== -->
-    <section id="tab-projects" class="tab-content">
-      <div style="margin-bottom: 1.5rem;">
-        <h3 style="font-family: var(--font-serif); font-size: 1.5rem; color: var(--blue-navy); margin-bottom: 0.4rem;">
-          Project Extensibility: What Else Can You Deploy?
-        </h3>
-        <p style="color: var(--text-muted); font-size: 0.95rem;">
-          This comparative study pattern applies across diverse tech stacks. Below is an architectural guide showing how other projects can be deployed manually vs. via Jenkins.
+    <!-- ──────────────────────────────────────────────────────────
+         PANE 5: Project Extensibility Guide
+         ────────────────────────────────────────────────────────── -->
+    <section id="pane-guide" class="pane">
+      <div class="sec-head">
+        <h3>Project Extensibility — What Else Can You Deploy?</h3>
+        <p>
+          This comparative study pattern applies across diverse technology stacks. Below is an
+          architectural guide showing how other projects can be deployed manually vs. via Jenkins.
         </p>
       </div>
 
-      <div style="display: flex; flex-direction: column; gap: 1.5rem;">
-
-        <!-- Project 1: Node.js / Express Web Service -->
-        <div style="background-color: var(--bg-card); border: 1px solid var(--border-light); border-radius: 8px; padding: 1.5rem; box-shadow: var(--shadow-sm); border-left: 5px solid var(--blue-primary);">
-          <h4 style="font-family: var(--font-serif); font-size: 1.25rem; color: var(--blue-navy); margin-bottom: 0.35rem;">
-            1. Node.js & Express REST Service (Current Implementation)
-          </h4>
-          <p style="font-size: 0.9rem; color: var(--text-muted); margin-bottom: 0.75rem;">
-            Lightweight, fast startup, ideal for microservices and API backends.
-          </p>
-          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; font-size: 0.85rem;">
-            <div>
-              <strong style="color: var(--status-red);">Manual Commands:</strong>
-              <pre class="code-box" style="margin-top:0.4rem; padding: 0.8rem;">cd deployment-comparison
+      <!-- Project 1: Node.js (current) -->
+      <div class="card" style="margin-bottom:1.5rem; border-left:5px solid var(--blue-600);">
+        <div class="card-head">
+          <h3>1. Node.js &amp; Express REST Service (Current Implementation)</h3>
+        </div>
+        <div class="card-body split">
+          <div>
+            <p style="font-weight:600; color:var(--red-700); margin-bottom:.5rem;">Manual Commands</p>
+            <div class="code-block">cd deployment-comparison
 npm install
 node server.js
-curl http://localhost:3000/health</pre>
-            </div>
-            <div>
-              <strong style="color: var(--status-green);">Jenkins Pipeline Stages:</strong>
-              <pre class="code-box" style="margin-top:0.4rem; padding: 0.8rem;">stage('Dependencies') { sh 'npm install' }
-stage('Deploy') { sh 'nohup node server.js &' }
-stage('Verify') { sh 'curl http://localhost:3000/health' }</pre>
-            </div>
+curl http://localhost:3000/health</div>
+          </div>
+          <div>
+            <p style="font-weight:600; color:var(--green-700); margin-bottom:.5rem;">Jenkins Pipeline Stages</p>
+            <div class="code-block">stage('Install') { sh 'npm install' }
+stage('Deploy')  { sh 'nohup node server.js &' }
+stage('Verify')  { sh 'curl http://localhost:3000/health' }</div>
           </div>
         </div>
+      </div>
 
-        <!-- Project 2: React.js Frontend -->
-        <div style="background-color: var(--bg-card); border: 1px solid var(--border-light); border-radius: 8px; padding: 1.5rem; box-shadow: var(--shadow-sm); border-left: 5px solid #0284c7;">
-          <h4 style="font-family: var(--font-serif); font-size: 1.25rem; color: var(--blue-navy); margin-bottom: 0.35rem;">
-            2. React.js / Vue.js Single Page Application (SPA)
-          </h4>
-          <p style="font-size: 0.9rem; color: var(--text-muted); margin-bottom: 0.75rem;">
-            Compiles static bundles (HTML/CSS/JS) and deploys them to an Nginx web server or cloud storage bucket (AWS S3 / Vercel).
-          </p>
-          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; font-size: 0.85rem;">
-            <div>
-              <strong style="color: var(--status-red);">Manual Commands:</strong>
-              <pre class="code-box" style="margin-top:0.4rem; padding: 0.8rem;">npm install
+      <!-- Project 2: React SPA -->
+      <div class="card" style="margin-bottom:1.5rem; border-left:5px solid #0284c7;">
+        <div class="card-head">
+          <h3>2. React.js / Vue.js Single Page Application (SPA)</h3>
+        </div>
+        <div class="card-body split">
+          <div>
+            <p style="font-weight:600; color:var(--red-700); margin-bottom:.5rem;">Manual Commands</p>
+            <div class="code-block">npm install
 npm run build
-scp -r ./dist/* deploy@server:/var/www/html/
-sudo systemctl reload nginx</pre>
-            </div>
-            <div>
-              <strong style="color: var(--status-green);">Jenkins Pipeline Stages:</strong>
-              <pre class="code-box" style="margin-top:0.4rem; padding: 0.8rem;">stage('Build') { sh 'npm run build' }
+scp -r ./dist/* server:/var/www/html/
+sudo systemctl reload nginx</div>
+          </div>
+          <div>
+            <p style="font-weight:600; color:var(--green-700); margin-bottom:.5rem;">Jenkins Pipeline Stages</p>
+            <div class="code-block">stage('Build')  { sh 'npm run build' }
 stage('Deploy') { sh 'rsync -avz ./dist/ /var/www/html/' }
-stage('Verify') { sh 'curl -I http://localhost' }</pre>
-            </div>
+stage('Verify') { sh 'curl -I http://localhost' }</div>
           </div>
         </div>
+      </div>
 
-        <!-- Project 3: Python Flask / FastAPI Service -->
-        <div style="background-color: var(--bg-card); border: 1px solid var(--border-light); border-radius: 8px; padding: 1.5rem; box-shadow: var(--shadow-sm); border-left: 5px solid #d97706;">
-          <h4 style="font-family: var(--font-serif); font-size: 1.25rem; color: var(--blue-navy); margin-bottom: 0.35rem;">
-            3. Python Flask / FastAPI Microservice
-          </h4>
-          <p style="font-size: 0.9rem; color: var(--text-muted); margin-bottom: 0.75rem;">
-            Common for AI/ML inference, data processing, and Python backend services.
-          </p>
-          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; font-size: 0.85rem;">
-            <div>
-              <strong style="color: var(--status-red);">Manual Commands:</strong>
-              <pre class="code-box" style="margin-top:0.4rem; padding: 0.8rem;">source venv/bin/activate
+      <!-- Project 3: Python Flask -->
+      <div class="card" style="margin-bottom:1.5rem; border-left:5px solid #d97706;">
+        <div class="card-head">
+          <h3>3. Python Flask / FastAPI Microservice</h3>
+        </div>
+        <div class="card-body split">
+          <div>
+            <p style="font-weight:600; color:var(--red-700); margin-bottom:.5rem;">Manual Commands</p>
+            <div class="code-block">source venv/bin/activate
 pip install -r requirements.txt
 pytest
-gunicorn --daemon -b 0.0.0.0:5000 app:app</pre>
-            </div>
-            <div>
-              <strong style="color: var(--status-green);">Jenkins Pipeline Stages:</strong>
-              <pre class="code-box" style="margin-top:0.4rem; padding: 0.8rem;">stage('Test') { sh 'pytest tests/' }
+gunicorn --daemon -b 0.0.0.0:5000 app:app</div>
+          </div>
+          <div>
+            <p style="font-weight:600; color:var(--green-700); margin-bottom:.5rem;">Jenkins Pipeline Stages</p>
+            <div class="code-block">stage('Test')   { sh 'pytest tests/' }
 stage('Deploy') { sh 'gunicorn -D app:app' }
-stage('Health') { sh 'curl http://localhost:5000/health' }</pre>
-            </div>
+stage('Health') { sh 'curl http://localhost:5000/health' }</div>
           </div>
         </div>
-
-        <!-- Project 4: Dockerized Container App -->
-        <div style="background-color: var(--bg-card); border: 1px solid var(--border-light); border-radius: 8px; padding: 1.5rem; box-shadow: var(--shadow-sm); border-left: 5px solid #2563eb;">
-          <h4 style="font-family: var(--font-serif); font-size: 1.25rem; color: var(--blue-navy); margin-bottom: 0.35rem;">
-            4. Dockerized Full-Stack Application
-          </h4>
-          <p style="font-size: 0.9rem; color: var(--text-muted); margin-bottom: 0.75rem;">
-            Encapsulates runtime, dependencies, and OS layers in an immutable container image.
-          </p>
-          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; font-size: 0.85rem;">
-            <div>
-              <strong style="color: var(--status-red);">Manual Commands:</strong>
-              <pre class="code-box" style="margin-top:0.4rem; padding: 0.8rem;">docker build -t myapp:latest .
-docker stop myapp-running || true
-docker run -d -p 3000:3000 --name myapp-running myapp:latest</pre>
-            </div>
-            <div>
-              <strong style="color: var(--status-green);">Jenkins Pipeline Stages:</strong>
-              <pre class="code-box" style="margin-top:0.4rem; padding: 0.8rem;">stage('Build Image') { sh 'docker build -t myapp:${BUILD_NUMBER} .' }
-stage('Deploy Container') { sh 'docker-compose up -d --build' }
-stage('Verify') { sh 'curl -f http://localhost:3000/health' }</pre>
-            </div>
-          </div>
-        </div>
-
       </div>
+
+      <!-- Project 4: Docker -->
+      <div class="card" style="border-left:5px solid #2563eb;">
+        <div class="card-head">
+          <h3>4. Dockerized Full-Stack Application</h3>
+        </div>
+        <div class="card-body split">
+          <div>
+            <p style="font-weight:600; color:var(--red-700); margin-bottom:.5rem;">Manual Commands</p>
+            <div class="code-block">docker build -t myapp:latest .
+docker stop myapp-running || true
+docker run -d -p 3000:3000 \
+  --name myapp-running myapp:latest</div>
+          </div>
+          <div>
+            <p style="font-weight:600; color:var(--green-700); margin-bottom:.5rem;">Jenkins Pipeline Stages</p>
+            <div class="code-block">stage('Build Image') {
+  sh 'docker build -t myapp:${BUILD_NUMBER} .'
+}
+stage('Deploy') {
+  sh 'docker-compose up -d --build'
+}
+stage('Verify') {
+  sh 'curl -f http://localhost:3000/health'
+}</div>
+          </div>
+        </div>
+      </div>
+
     </section>
 
   </main>
 
+  <!-- Scripts — benchmark first (defines initDashboard), then live_status, then app coordinator -->
   <script src="js/benchmark.js"></script>
   <script src="js/live_status.js"></script>
   <script src="js/app.js"></script>
+
 </body>
 </html>

@@ -1,58 +1,65 @@
 @echo off
 setlocal enabledelayedexpansion
-REM ==============================================================================
-REM DIT University CSN-452 DevOps - Automated Pipeline Execution Runner
-REM Simulates the exact Jenkins Pipeline stages locally from Chapter 3.3
-REM ==============================================================================
-
-echo ==========================================================
-echo [JENKINS AUTOMATION] Executing Pipeline (Build #3 Benchmark)
-echo Stages: Install Dependencies -^> Deploy Application -^> Verify
-echo ==========================================================
+title Jenkins Automated Pipeline Execution
+echo ========================================================
+echo   CSN-452 DevOps - Automated CI/CD Pipeline Simulator
+echo   Job Name: Deployment-Automation
+echo   Pipeline: 3 Stages (Install - Deploy - Verify)
+echo ========================================================
 echo.
 
 cd /d "%~dp0deployment-comparison"
 
-echo [Stage 1: Install Dependencies]
-call node -v
-call npm -v
-call npm install
-if %ERRORLEVEL% NEQ 0 (
-    echo [Stage 1] Failed to install dependencies!
+set START_TIME=%time%
+
+echo [Pipeline] stage('Install Dependencies')
+echo [Pipeline] dir('deployment-comparison')
+node -v
+npm -v
+call npm install --no-audit --no-fund
+if %errorlevel% neq 0 (
+    echo [ERROR] Pipeline Failed at Stage: Install Dependencies
+    pause
     exit /b 1
 )
-echo [Stage 1] Dependencies installed successfully.
+echo [Pipeline] Stage 'Install Dependencies' completed successfully.
 echo.
 
-echo [Stage 2: Deploy Application]
-echo Starting Express server on port 3000 in background...
-start "" /min node server.js
-echo [Stage 2] Application process launched.
+echo [Pipeline] stage('Deploy Application')
+start "Node.js Web App" cmd /c "node server.js"
+echo [Pipeline] Background process dispatched.
+echo [Pipeline] Stage 'Deploy Application' completed successfully.
 echo.
 
-echo [Stage 3: Verify Deployment]
-echo Verifying health endpoint http://localhost:3000/health (Max 5 attempts)...
-set VERIFIED=0
-for /L %%i in (1,1,5) do (
-    ping 127.0.0.1 -n 2 >nul
-    curl.exe -fsS http://localhost:3000/health >nul 2>&1
-    if !ERRORLEVEL! EQU 0 (
-        set VERIFIED=1
-        echo [Stage 3] Health check verified: {"status":"Application is running!"}
-        goto :stage_success
+echo [Pipeline] stage('Verify Deployment')
+echo Polling http://localhost:3000/health (Max 5 attempts)...
+
+set HEALTH_OK=0
+for /l %%i in (1, 1, 5) do (
+    if !HEALTH_OK! equ 0 (
+        ping 127.0.0.1 -n 2 >nul
+        curl.exe -fsS http://localhost:3000/health >nul 2>&1
+        if !errorlevel! equ 0 (
+            set HEALTH_OK=1
+            echo Attempt %%i: Health check OK [HTTP 200]
+        ) else (
+            echo Attempt %%i: Waiting for application...
+        )
     )
 )
 
-:stage_success
-if !VERIFIED! EQU 0 (
-    echo [Stage 3] Deployment Verification Failed!
-    exit /b 1
+if !HEALTH_OK! equ 1 (
+    echo.
+    echo ========================================================
+    echo   [Pipeline] End of Pipeline: SUCCESS
+    echo   Jenkins Build Finished: SUCCESS
+    echo   Dashboard: http://localhost:3000
+    echo   Health:    http://localhost:3000/health
+    echo ========================================================
+) else (
+    echo.
+    echo [ERROR] Pipeline Failed at Stage: Verify Deployment
 )
 
 echo.
-echo ==========================================================
-echo [SUCCESS] Jenkins Pipeline Finished Successfully!
-echo Result: Build status is GREEN (Observed: 8.4 seconds).
-echo URL: http://localhost:3000
-echo Health Check: http://localhost:3000/health
-echo ==========================================================
+pause

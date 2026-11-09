@@ -1,132 +1,96 @@
 # Comparative Study of Manual and Automated Software Deployment
-### Course: CSN-452 (DevOps) • School of Computing, DIT University, Dehradun
 
-A real-world practical project and comparative study demonstrating **Manual Software Deployment** versus **Jenkins-based Automated Software Deployment** for a Node.js & Express application.
-
----
-
-## 📋 Project Summary
-
-| Detail | Information |
-| :--- | :--- |
-| **Project Title** | Comparative Study of Manual and Automated Software Deployment |
-| **Course Code** | CSN-452 (DevOps) |
-| **Institution** | School of Computing, DIT University, Dehradun |
-| **Guide** | Mrs. Suchi Johari |
-| **Submitted By** | Hemant Sharma, Sakshi Patel |
-| **Repository Name** | `deployment-comparison` |
-| **Target Runtime** | Node.js & Express (Port: 3000) |
-| **Health Check Endpoint** | `http://localhost:3000/health` $\rightarrow$ `{"status":"Application is running!"}` |
-| **Jenkins Build Benchmark** | **Build #3**: Duration **8.4 seconds** (Status: **SUCCESS**) |
+**Course**: CSN-452 DevOps  
+**Institution**: DIT University, Dehradun  
+**Submitted by**: Hemant Sharma (SAP: 1000020376) & Sakshi Patel (SAP: 100020358)  
+**Project Guide**: Mrs. Suchi Johari  
+**GitHub Repository**: [https://github.com/amrishmatura/DEVOPS](https://github.com/amrishmatura/DEVOPS)
 
 ---
 
-## 📂 Repository Structure
+## 1. Project Overview
+
+This project implements an empirical comparative study between **Manual Deployment** and **Automated CI/CD Deployment** using Jenkins. Both methods deploy the same Node.js & Express web service to ensure parity and compare:
+1. **Deployment Time** (Local ~8.4s automated vs. manual command entry)
+2. **Human Effort** (Hands-off pipeline vs. active operator CLI inputs)
+3. **Error Rate** (Deterministic script vs. manual typos/omissions)
+4. **Failure Frequency** (Standardized environment vs. ad-hoc commands)
+5. **Recovery Time** (Automated pipeline rerun vs. manual debugging)
+
+---
+
+## 2. Project Structure
 
 ```text
-E:\DEVOPS\
-│
-├── Jenkinsfile                          # Exact Declarative Pipeline script from Report Chapter 3.3
-│
-├── run_manual_deployment.bat             # 1-Click Manual Deployment execution (Windows)
-├── run_automated_pipeline.bat            # 1-Click Automated Pipeline execution (Windows)
-├── run_manual_deployment.sh              # 1-Click Manual Deployment execution (Linux/macOS)
-├── run_automated_pipeline.sh             # 1-Click Automated Pipeline execution (Linux/macOS)
-│
-├── deployment-comparison/               # Application directory checked out by Jenkins
-│   ├── server.js                        # Express backend serving application & /health endpoint
-│   ├── package.json                     # Express dependency & npm start script
-│   │
-│   └── public/                          # Front-end UI (Minimal Navy Blue & Cream White theme)
-│       ├── index.html                   # Welcoming app + Chapter 4 Comparative Dashboard
-│       ├── css/
-│       │   └── style.css                # Navy & Cream theme, Non-AI typography (Lora, Work Sans)
-│       └── js/
-│           ├── app.js                   # Navigation & event coordinator
-│           ├── live_status.js           # Real-time health poller & execution runner
-│           └── benchmark.js             # Table 4.3 loader from Chapter 4 of report
-│
-└── README.md                            # Comprehensive documentation & presentation guide
+E:\DEVOPS
+├── Jenkinsfile                          # 3-Stage Declarative Pipeline (Install -> Deploy -> Verify)
+├── README.md                            # Complete Project Documentation & Viva Guide
+├── start_real_jenkins.bat               # Starts local Jenkins CI Server on port 8080
+├── run_manual_deployment.bat            # Terminal script executing manual deployment steps
+├── run_automated_pipeline.bat           # Local 3-stage pipeline execution script
+├── 1000020376_Hemant_Sharma.pdf         # DIT University Project Report Reference
+└── deployment-comparison/               # Application Root
+    ├── server.js                        # Express server exposing /health, /api/system-status, /api/comparison
+    ├── package.json                     # Node.js dependencies
+    └── public/                          # Navy Blue & White Dashboard UI
+        ├── index.html                   # 5-Tab Academic Interface
+        ├── css/style.css                # Minimalist navy blue & white theme
+        └── js/
+            ├── app.js                   # Tab coordinator & action buttons
+            ├── benchmark.js             # Renders 5 KPIs, Table 4.3, and audit history
+            └── live_status.js           # Live /health poller & deployment execution runners
 ```
 
 ---
 
-## 🚀 How to Execute Real Deployments
+## 3. How to Run
 
-### 1. Manual Deployment Process (Chapter 4.1)
-In the manual method, deployment commands are entered directly in the terminal from the application directory:
-
-```bash
-cd deployment-comparison
-npm install
-node server.js
-```
-Or simply double-click: **`run_manual_deployment.bat`**
-
-Verification:
-- Application URL: `http://localhost:3000`
-- Health Endpoint: `http://localhost:3000/health` (Returns: `{"status":"Application is running!"}`)
+### Method A: Manual Deployment
+1. Double-click or run:
+   ```cmd
+   .\run_manual_deployment.bat
+   ```
+2. Or run manually step-by-step:
+   ```cmd
+   cd deployment-comparison
+   npm install
+   node server.js
+   curl http://localhost:3000/health
+   ```
+3. Open Dashboard in your browser: `http://localhost:3000`
 
 ---
 
-### 2. Automated Jenkins Pipeline Process (Chapter 3.3 & 4.2)
-In the automated method, Jenkins executes the declarative stages defined in the `Jenkinsfile`:
-
-1. **Stage 1 (Install Dependencies)**:
-   ```bash
-   node -v && npm -v && npm install
+### Method B: Automated CI/CD Pipeline (Jenkins)
+1. **Start Jenkins Server** (runs locally on port 8080):
+   ```cmd
+   .\start_real_jenkins.bat
    ```
-2. **Stage 2 (Deploy Application)**:
-   ```bash
-   nohup node server.js > app.log 2>&1 &
-   ```
-3. **Stage 3 (Verify Deployment)**:
-   ```bash
-   for i in 1 2 3 4 5; do
-     if curl -fsS http://localhost:3000/health; then
-       echo "Deployment successful!"
-       exit 0
-     fi
-     sleep 2
-   done
-   ```
-
-To run this exact automated pipeline locally with automatic timing:
-```bash
-./run_automated_pipeline.bat
-```
-*(Recorded duration matches Jenkins Build #3: **8.4 seconds** with a green success indicator).*
+   - Open: [http://localhost:8080](http://localhost:8080)
+   - Initial Admin Password: `5f98dd96a25041a7af1bdb68de273725` (also stored in `~/.jenkins/secrets/initialAdminPassword`)
+2. **Job Configuration**:
+   - Job Name: `Deployment-Automation`
+   - Type: **Pipeline**
+   - Definition: **Pipeline script from SCM**
+   - SCM: **Git**
+   - Repository URL: `https://github.com/amrishmatura/DEVOPS.git`
+   - Branch Specifier: `*/main`
+   - Script Path: `Jenkinsfile`
+3. Click **Build Now** to execute the pipeline. Build #3 runs in ~8.4 seconds.
 
 ---
 
-## 📊 Chapter 4.3: Comparative Analysis Table
-
-| Parameter | Manual Deployment | Automated Deployment (Jenkins) |
-| :--- | :--- | :--- |
-| **Execution** | Commands are entered manually by the operator. | Jenkins executes defined stages from the `Jenkinsfile`. |
-| **Dependency Installation** | Operator runs `npm install`. | Pipeline runs `npm install` automatically. |
-| **Application Start** | Operator runs `node server.js`. | Pipeline starts `server.js` as a background process. |
-| **Verification** | Operator opens browser URL or runs `curl`. | Pipeline verifies `/health` response automatically. |
-| **Repeatability** | Depends on operator following the same steps. | Defined steps are deterministically repeated. |
-| **Human Effort** | Requires continuous manual command execution. | Requires initiating/triggering the Jenkins job. |
-| **Observed Duration** | 45–90s (local test) / 45–65 mins (prod scale). | **Build #3 displayed 8.4 seconds in Jenkins.** |
+### Method C: Interactive Dashboard Runner
+1. Open [http://localhost:3000](http://localhost:3000)
+2. Go to **Tab 3: Live Deployment Runner**
+3. Click **▶ Execute Manual Deployment** or **⚡ Execute Jenkins Pipeline (Build #3)**
+4. Watch the live console output, timer, and automatic entry into the deployment audit history log.
 
 ---
 
-## 🎓 How to Demonstrate to Your Invigilator
-
-1. **Open the Application**:
-   - Start the app: `cd deployment-comparison && npm start`
-   - Open browser: `http://localhost:3000`
-   - Show the hero card displaying:
-     *“Software Deployment Project – Welcome! Comparative Study of Manual and Automated Software Deployment”* with the live green status pill.
-2. **Open the Live Health Check**:
-   - Navigate to `http://localhost:3000/health`. Show the exact JSON output:
-     `{"status":"Application is running!"}`.
-3. **Show Tab 2 (Chapter 4 Comparative Table)**:
-   - Walk through the 7 comparison parameters directly from Table 4.3 of your report.
-4. **Trigger the Real Deployment Runner (Tab 3)**:
-   - Click **“Execute Manual Deployment Run”** to show the manual terminal commands.
-   - Click **“Execute Jenkins Pipeline (Build #3)”** to demonstrate the automated stages finishing in **8.4 seconds**.
-5. **Show the Jenkinsfile (Tab 4)**:
-   - Explain the 3 stages: `Install Dependencies` $\rightarrow$ `Deploy Application` $\rightarrow$ `Verify Deployment`.
+## 4. Key Endpoints
+- `GET /` — Interactive Navy Blue & White academic dashboard
+- `GET /health` — Health check endpoint returning `{"status":"Application is running!"}`
+- `GET /api/system-status` — Real-time Node runtime diagnostics, memory usage, uptime
+- `GET /api/comparison` — Table 4.3 data & 5 core DevOps metrics
+- `GET /api/deployments` — Deployment audit trail

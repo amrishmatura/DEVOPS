@@ -1,28 +1,53 @@
 @echo off
-REM ==============================================================================
-REM DIT University CSN-452 DevOps - Manual Deployment Script
-REM Commands directly from Chapter 4.1 of the Project Report
-REM ==============================================================================
-
-echo ==========================================================
-echo [MANUAL DEPLOYMENT] Initiating Manual Deployment Workflow
-echo ==========================================================
+setlocal
+title Manual Deployment Execution
+echo ========================================================
+echo   CSN-452 DevOps - Manual Software Deployment
+echo   Target: Node.js Express Service (Port 3000)
+echo ========================================================
 echo.
-echo Step 1: Changing directory to deployment-comparison...
+
 cd /d "%~dp0deployment-comparison"
-if %ERRORLEVEL% NEQ 0 (
-    echo Error: Could not find deployment-comparison directory!
+
+echo [Step 1/4] Checking Node.js and npm environment...
+node -v
+npm -v
+if %errorlevel% neq 0 (
+    echo [ERROR] Node.js is not found in PATH!
     pause
     exit /b 1
 )
 
 echo.
-echo Step 2: Installing dependencies manually...
+echo [Step 2/4] Installing application dependencies...
 call npm install
+if %errorlevel% neq 0 (
+    echo [ERROR] npm install failed!
+    pause
+    exit /b 1
+)
 
 echo.
-echo Step 3: Starting server manually with node server.js...
-echo Application will start on http://localhost:3000
-echo Check health check at http://localhost:3000/health
+echo [Step 3/4] Starting application server (Port 3000)...
+start "Node.js Web App" cmd /c "node server.js"
+
+echo Waiting for server to initialize...
+ping 127.0.0.1 -n 3 >nul
+
 echo.
-call node server.js
+echo [Step 4/4] Verifying deployment health...
+curl.exe -fsS http://localhost:3000/health
+if %errorlevel% equ 0 (
+    echo.
+    echo ========================================================
+    echo   [SUCCESS] Application manually deployed successfully!
+    echo   Dashboard: http://localhost:3000
+    echo   Health:    http://localhost:3000/health
+    echo ========================================================
+) else (
+    echo.
+    echo [WARNING] Health check failed or still starting. Check http://localhost:3000/health manually.
+)
+
+echo.
+pause

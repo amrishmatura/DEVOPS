@@ -1,218 +1,158 @@
 /**
- * DIT UNIVERSITY - DEPARTMENT OF COMPUTER SCIENCE & ENGINEERING
- * Course: CSN-452 DevOps
- * Project: Comparative Study of Manual and Automated Software Deployment
+ * DIT University - CSN-452 DevOps
+ * Comparative Study of Manual and Automated Software Deployment
  *
- * Submitted by: Hemant Sharma & Sakshi Patel
+ * Submitted by : Hemant Sharma (1000020376) & Sakshi Patel (100020358)
  * Project Guide: Mrs. Suchi Johari
  *
- * This server provides:
- * 1. The core application service listening on Port 3000
- * 2. The /health verification endpoint (Project Report Figure 4.6)
- * 3. System telemetry & deployment history APIs
- * 4. Academic benchmark comparison data (Table 4.3)
+ * API Endpoints:
+ *   GET  /                      → Dashboard (public/index.html)
+ *   GET  /health                → Health check used by Jenkins Verify stage
+ *   GET  /api/system-status     → Live server diagnostics (uptime, memory, node version)
+ *   GET  /api/comparison        → Benchmark dataset — 5 KPIs + Table 4.3
+ *   GET  /api/deployments       → Deployment event log (history)
+ *   POST /api/deployments/record → Record a new deployment run from the UI runner
  */
 
 const express = require('express');
-const path = require('path');
-const os = require('os');
+const path    = require('path');
+const os      = require('os');
 
-const app = express();
-const PORT = process.env.PORT || 3000;
-const SERVER_BOOT_TIME = new Date();
+const app       = express();
+const PORT      = process.env.PORT || 3000;
+const BOOT_TIME = new Date();
 
-// Middleware
 app.use(express.json());
 app.use(express.static(path.join(__dirname, 'public')));
 
-// In-memory deployment history tracker
-let deploymentHistory = [
+// ─────────────────────────────────────────────────────────────────────────────
+// In-memory deployment event log  (seed with 3 records matching the report)
+// ─────────────────────────────────────────────────────────────────────────────
+const deploymentLog = [
   {
-    id: "DEP-101",
-    method: "Manual Deployment",
-    duration: "65.0s",
-    operator: "Operator (Terminal)",
-    status: "SUCCESS",
-    timestamp: new Date(Date.now() - 3600000).toLocaleTimeString()
+    id        : 1,
+    method    : 'Manual Deployment',
+    duration  : '58s',
+    operator  : 'Hemant Sharma',
+    status    : 'SUCCESS',
+    timestamp : new Date(Date.now() - 7200000).toLocaleTimeString('en-IN')
   },
   {
-    id: "DEP-102",
-    method: "Jenkins Pipeline (Build #3)",
-    duration: "8.4s",
-    operator: "Jenkins SCM Webhook",
-    status: "SUCCESS",
-    timestamp: new Date(Date.now() - 1800000).toLocaleTimeString()
+    id        : 2,
+    method    : 'Jenkins Pipeline (Build #1)',
+    duration  : '11.2s',
+    operator  : 'Jenkins CI',
+    status    : 'SUCCESS',
+    timestamp : new Date(Date.now() - 3600000).toLocaleTimeString('en-IN')
+  },
+  {
+    id        : 3,
+    method    : 'Jenkins Pipeline (Build #3)',
+    duration  : '8.4s',
+    operator  : 'Jenkins CI',
+    status    : 'SUCCESS',
+    timestamp : new Date(Date.now() - 900000).toLocaleTimeString('en-IN')
   }
 ];
 
-/**
- * 1. Core Health Check Endpoint
- * Sourced directly from Chapter 1.3 & 3.3 (Figure 4.6 of Project Report)
- * Verified by the Jenkins pipeline via: curl -fsS http://localhost:3000/health
- */
+// ─────────────────────────────────────────────────────────────────────────────
+// 1. /health  —  Used by the Jenkins "Verify Deployment" stage (Figure 4.6)
+// ─────────────────────────────────────────────────────────────────────────────
 app.get('/health', (req, res) => {
-  res.status(200).json({
-    status: "Application is running!"
-  });
+  res.status(200).json({ status: 'Application is running!' });
 });
 
-/**
- * 2. Live System Diagnostics API
- * Returns real runtime metrics (Memory, Platform, Uptime)
- */
+// ─────────────────────────────────────────────────────────────────────────────
+// 2. /api/system-status  —  Live telemetry shown in the dashboard header bar
+// ─────────────────────────────────────────────────────────────────────────────
 app.get('/api/system-status', (req, res) => {
-  const uptimeSeconds = Math.floor(process.uptime());
-  const memUsed = process.memoryUsage();
-
-  res.status(200).json({
-    status: "Application is running!",
-    deployedAt: SERVER_BOOT_TIME.toISOString(),
-    uptimeSeconds: uptimeSeconds,
-    nodeVersion: process.version,
-    platform: process.platform,
-    hostname: os.hostname(),
-    memory: {
-      rssMB: (memUsed.rss / 1024 / 1024).toFixed(1),
-      heapUsedMB: (memUsed.heapUsed / 1024 / 1024).toFixed(1)
+  const mem = process.memoryUsage();
+  res.json({
+    nodeVersion   : process.version,
+    platform      : os.platform(),
+    hostname      : os.hostname(),
+    uptimeSeconds : Math.floor(process.uptime()),
+    deployedAt    : BOOT_TIME.toISOString(),
+    memory        : {
+      heapUsedMB : (mem.heapUsed / 1024 / 1024).toFixed(1),
+      rssMB      : (mem.rss     / 1024 / 1024).toFixed(1)
     }
   });
 });
 
-/**
- * 3. Deployment History API
- */
-app.get('/api/deployments', (req, res) => {
-  res.status(200).json({
-    total: deploymentHistory.length,
-    history: deploymentHistory
-  });
-});
-
-/**
- * Record a new deployment event from the runner
- */
-app.post('/api/deployments/record', (req, res) => {
-  const { method, duration, status } = req.body;
-  const newRecord = {
-    id: `DEP-${Math.floor(100 + Math.random() * 900)}`,
-    method: method || "Manual Run",
-    duration: duration || "8.4s",
-    operator: method.includes("Jenkins") ? "Jenkins CI/CD Pipeline" : "Operator (Terminal)",
-    status: status || "SUCCESS",
-    timestamp: new Date().toLocaleTimeString()
-  };
-
-  deploymentHistory.unshift(newRecord);
-  if (deploymentHistory.length > 10) deploymentHistory.pop();
-
-  res.status(201).json({ success: true, record: newRecord });
-});
-
-/**
- * 4. Comparative Benchmark Data (Chapter 4, Table 4.3)
- */
+// ─────────────────────────────────────────────────────────────────────────────
+// 3. /api/comparison  —  5 KPI cards + Table 4.3 (Chapter 4 of DIT Report)
+// ─────────────────────────────────────────────────────────────────────────────
 app.get('/api/comparison', (req, res) => {
-  res.status(200).json({
-    project: "Comparative Study of Manual and Automated Software Deployment",
-    course: "CSN-452 DevOps",
-    institution: "DIT University, Dehradun",
-    jenkinsBuildReference: {
-      buildNumber: 3,
-      durationSeconds: 8.4,
-      status: "SUCCESS"
-    },
-    tableComparison: [
-      {
-        parameter: "Execution",
-        manual: "Commands are entered by the operator.",
-        automated: "Jenkins executes the steps from the Jenkinsfile."
-      },
-      {
-        parameter: "Dependency installation",
-        manual: "Operator runs npm install.",
-        automated: "Pipeline runs npm install automatically."
-      },
-      {
-        parameter: "Application start",
-        manual: "Operator runs node server.js.",
-        automated: "Pipeline starts server.js using nohup."
-      },
-      {
-        parameter: "Verification",
-        manual: "Operator opens the URL or runs curl.",
-        automated: "Pipeline checks the /health endpoint."
-      },
-      {
-        parameter: "Repeatability",
-        manual: "Depends on the operator following the same steps.",
-        automated: "Defined steps are repeated through the pipeline."
-      },
-      {
-        parameter: "Human effort",
-        manual: "Requires manual command execution.",
-        automated: "Requires initiating or triggering the Jenkins job."
-      },
-      {
-        parameter: "Observed duration",
-        manual: "45 - 90 seconds (local) / 45 - 65 mins (production scale)",
-        automated: "Build #3 displayed 8.4 seconds in Jenkins."
-      }
-    ],
+  res.json({
+    course      : 'CSN-452 DevOps',
+    institution : 'DIT University, Dehradun',
+    students    : ['Hemant Sharma', 'Sakshi Patel'],
+    guide       : 'Mrs. Suchi Johari',
+    jenkinsBuild: { number: 3, durationSec: 8.4, status: 'SUCCESS' },
+
+    // Five KPI summary cards (top of dashboard)
     metrics5Summary: [
-      {
-        name: "Deployment Time",
-        manual: "65 mins (prod) / 60s (local)",
-        automated: "8.4 seconds (Build #3)",
-        delta: "-91.5% Faster",
-        unit: "Time"
-      },
-      {
-        name: "Human Effort",
-        manual: "Active command typing",
-        automated: "1-Click SCM trigger",
-        delta: "-96.0% Less Effort",
-        unit: "Person-Hours"
-      },
-      {
-        name: "Error Rate",
-        manual: "26.8% (Typos, missed configs)",
-        automated: "2.1% (Deterministic script)",
-        delta: "-92.2% Error Drop",
-        unit: "Risk"
-      },
-      {
-        name: "Failure Frequency",
-        manual: "18.5% (Runtime drift)",
-        automated: "2.4% (Gated pipeline)",
-        delta: "-87.0% Less Incidents",
-        unit: "Frequency"
-      },
-      {
-        name: "Recovery Time (MTTR)",
-        manual: "45 - 120 mins manual diagnostic",
-        automated: "1.5 mins automated re-run",
-        delta: "-98.0% Faster Recovery",
-        unit: "MTTR"
-      }
+      { name: 'Deployment Time',   manual: '65 mins (prod scale)', automated: '8.4 seconds',   delta: '−91.5%',  unit: 'Time Reduction'      },
+      { name: 'Human Effort',      manual: '2.5 person-hours',     automated: '< 1 minute',    delta: '−96.0%',  unit: 'Effort Reduction'     },
+      { name: 'Error Rate',        manual: '26.8%',                automated: '2.1%',           delta: '−92.2%',  unit: 'Error Rate Reduction' },
+      { name: 'Failure Frequency', manual: '18.5%',                automated: '2.4%',           delta: '−87.0%',  unit: 'Failure Reduction'    },
+      { name: 'Recovery Time',     manual: '75 minutes',           automated: '1.5 minutes',    delta: '−98.0%',  unit: 'Recovery Speedup'     }
+    ],
+
+    // Table 4.3 — Chapter 4 Comparative Analysis
+    tableComparison: [
+      { parameter: 'Execution',               manual: 'Commands entered one-by-one by the operator',                            automated: 'Jenkins reads and executes Jenkinsfile stages automatically'    },
+      { parameter: 'Dependency Installation', manual: 'Operator manually runs npm install in the terminal',                      automated: 'Pipeline runs npm install in the Install Dependencies stage'    },
+      { parameter: 'Application Start',       manual: 'Operator runs node server.js directly',                                   automated: 'Pipeline starts server in a background process via nohup/start' },
+      { parameter: 'Verification',            manual: 'Operator opens browser or runs curl manually',                            automated: 'Pipeline polls /health endpoint and exits on HTTP 200'          },
+      { parameter: 'Repeatability',           manual: 'Depends on operator executing exact same steps each time',                automated: 'Identical pipeline steps run on every build — deterministic'    },
+      { parameter: 'Human Effort',            manual: 'High — requires full active attention throughout',                        automated: 'Minimal — click Build Now or push a commit to trigger'          },
+      { parameter: 'Observed Duration',       manual: 'Approximately 45–90 seconds in a local environment',                     automated: 'Build #3: 8.4 seconds (3-stage declarative pipeline)'           }
     ]
   });
 });
 
-// Start Express HTTP Server
-const server = app.listen(PORT, () => {
-  console.log(`================================================================`);
-  console.log(` DIT University CSN-452 DevOps Project Running                   `);
-  console.log(` Application URL: http://localhost:${PORT}                       `);
-  console.log(` Health Check:    http://localhost:${PORT}/health               `);
-  console.log(` Status API:      http://localhost:${PORT}/api/system-status     `);
-  console.log(`================================================================`);
+// ─────────────────────────────────────────────────────────────────────────────
+// 4. GET /api/deployments  —  Retrieve the deployment audit log
+// ─────────────────────────────────────────────────────────────────────────────
+app.get('/api/deployments', (req, res) => {
+  res.json({ total: deploymentLog.length, history: deploymentLog });
 });
 
-server.on('error', (err) => {
+// ─────────────────────────────────────────────────────────────────────────────
+// 5. POST /api/deployments/record  —  Record a new run from the UI runner
+// ─────────────────────────────────────────────────────────────────────────────
+app.post('/api/deployments/record', (req, res) => {
+  const { method, duration, status } = req.body;
+  const record = {
+    id        : deploymentLog.length + 1,
+    method    : method   || 'Manual Deployment',
+    duration  : duration || '--',
+    operator  : method && method.includes('Jenkins') ? 'Jenkins CI' : 'Student Operator',
+    status    : status   || 'SUCCESS',
+    timestamp : new Date().toLocaleTimeString('en-IN')
+  };
+  deploymentLog.unshift(record);
+  if (deploymentLog.length > 20) deploymentLog.pop(); // keep log tidy
+  res.status(201).json({ success: true, record });
+});
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Start Server
+// ─────────────────────────────────────────────────────────────────────────────
+const server = app.listen(PORT, () => {
+  console.log('═══════════════════════════════════════════════════════════');
+  console.log('  DIT University · CSN-452 DevOps  ·  Deployment Project   ');
+  console.log(`  Dashboard → http://localhost:${PORT}                       `);
+  console.log(`  Health    → http://localhost:${PORT}/health                `);
+  console.log('═══════════════════════════════════════════════════════════');
+});
+
+server.on('error', err => {
   if (err.code === 'EADDRINUSE') {
-    console.log(`[Notice] Port ${PORT} already has an active deployment instance.`);
-    console.log(`[Notice] Verified live application responding at http://localhost:${PORT}`);
+    console.log(`[Info] Port ${PORT} is already in use — another instance is running.`);
   } else {
-    console.error('Server startup error:', err);
+    throw err;
   }
 });
