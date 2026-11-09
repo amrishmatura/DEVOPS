@@ -1,0 +1,5 @@
+================================================================
+ Software Deployment Project - Application Running               
+ URL: http://localhost:3000                                    
+ Health Check: http://localhost:3000/health                    
+================================================================

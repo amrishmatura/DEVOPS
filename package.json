@@ -1,0 +1,23 @@
+{
+  "name": "comparative-software-deployment-study",
+  "version": "1.0.0",
+  "description": "Comparative Study of Manual vs. Jenkins-based Automated Software Deployment",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node --watch server.js"
+  },
+  "keywords": [
+    "devops",
+    "jenkins",
+    "deployment-study",
+    "cicd",
+    "automation",
+    "benchmarking"
+  ],
+  "author": "Engineering Research Team",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.19.2"
+  }
+}

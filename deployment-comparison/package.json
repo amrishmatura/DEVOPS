@@ -1,0 +1,12 @@
+{
+  "name": "deployment-comparison",
+  "version": "1.0.0",
+  "description": "Node.js application for Comparative Study of Manual and Automated Software Deployment",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "express": "^4.19.2"
+  }
+}

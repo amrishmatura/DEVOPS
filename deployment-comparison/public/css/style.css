@@ -1,0 +1,465 @@
+/* ==========================================================================
+   DIT UNIVERSITY - CSN-452 DevOps Project
+   Comparative Study of Manual and Automated Software Deployment
+   Theme: Crisp Blue and Clean White
+   Typography: Lora (Editorial Serif), Work Sans (Humanist Sans), JetBrains Mono
+   ========================================================================== */
+
+@import url('https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,500;0,600;0,700;1,400&family=Work+Sans:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap');
+
+:root {
+  /* Crisp Blue & White Palette */
+  --bg-page: #f8fafc;
+  --bg-card: #ffffff;
+  --bg-subtle: #f1f5f9;
+  --bg-blue-tint: #eff6ff;
+
+  /* Primary Blue Accents */
+  --blue-deep: #0a1b38;
+  --blue-navy: #102a54;
+  --blue-primary: #1d4ed8;
+  --blue-secondary: #2563eb;
+  --blue-border: #bfdbfe;
+
+  /* Text Colors */
+  --text-main: #0f172a;
+  --text-muted: #475569;
+  --text-light: #64748b;
+  --text-white: #ffffff;
+
+  /* Status Badges */
+  --status-green: #15803d;
+  --status-green-bg: #dcfce7;
+  --status-red: #b91c1c;
+  --status-red-bg: #fee2e2;
+
+  /* Clean Borders & Shadows */
+  --border-light: #e2e8f0;
+  --border-medium: #cbd5e1;
+  --shadow-sm: 0 1px 3px rgba(16, 42, 84, 0.05);
+  --shadow-card: 0 4px 6px -1px rgba(16, 42, 84, 0.07), 0 2px 4px -2px rgba(16, 42, 84, 0.05);
+
+  /* Non-AI Fonts */
+  --font-serif: 'Lora', Georgia, 'Times New Roman', serif;
+  --font-sans: 'Work Sans', system-ui, -apple-system, sans-serif;
+  --font-mono: 'JetBrains Mono', Consolas, monospace;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background-color: var(--bg-page);
+  color: var(--text-main);
+  font-family: var(--font-sans);
+  font-size: 16px;
+  line-height: 1.6;
+}
+
+/* Header */
+.top-header {
+  background: linear-gradient(135deg, var(--blue-deep) 0%, var(--blue-navy) 100%);
+  color: var(--text-white);
+  padding: 2.5rem 1.5rem 2rem;
+  border-bottom: 3px solid var(--blue-secondary);
+}
+
+.header-inner {
+  max-width: 1140px;
+  margin: 0 auto;
+}
+
+.inst-badge {
+  display: inline-block;
+  background-color: rgba(255, 255, 255, 0.15);
+  color: #e2e8f0;
+  font-size: 0.78rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  padding: 0.35rem 0.75rem;
+  border-radius: 4px;
+  margin-bottom: 0.85rem;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.main-title {
+  font-family: var(--font-serif);
+  font-size: 2.25rem;
+  font-weight: 600;
+  color: #ffffff;
+  line-height: 1.25;
+  margin-bottom: 0.6rem;
+}
+
+.main-desc {
+  color: #cbd5e1;
+  font-size: 1.05rem;
+  max-width: 860px;
+  font-weight: 300;
+  line-height: 1.6;
+}
+
+.header-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.75rem;
+  margin-top: 1.5rem;
+  padding-top: 1.15rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.15);
+  font-size: 0.88rem;
+  color: #cbd5e1;
+}
+
+.header-meta strong {
+  color: #ffffff;
+}
+
+/* Sticky Tab Navigation */
+.nav-bar {
+  background-color: var(--bg-card);
+  border-bottom: 1px solid var(--border-light);
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  box-shadow: var(--shadow-sm);
+}
+
+.nav-inner {
+  max-width: 1140px;
+  margin: 0 auto;
+  display: flex;
+  gap: 0.5rem;
+  padding: 0 1rem;
+  overflow-x: auto;
+}
+
+.nav-tab-btn {
+  background: none;
+  border: none;
+  border-bottom: 3px solid transparent;
+  color: var(--text-muted);
+  font-family: var(--font-sans);
+  font-size: 0.94rem;
+  font-weight: 500;
+  padding: 1rem 1.25rem;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.15s ease;
+}
+
+.nav-tab-btn:hover {
+  color: var(--blue-primary);
+  background-color: var(--bg-subtle);
+}
+
+.nav-tab-btn.active {
+  color: var(--blue-navy);
+  border-bottom-color: var(--blue-primary);
+  font-weight: 600;
+}
+
+/* Content Container */
+.container {
+  max-width: 1140px;
+  margin: 2rem auto;
+  padding: 0 1.25rem 3rem;
+}
+
+.tab-content {
+  display: none;
+}
+
+.tab-content.active {
+  display: block;
+  animation: fadeIn 0.2s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(3px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Hero Banner Card (Matches Figure 4.5 of DIT Report) */
+.hero-banner-card {
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-light);
+  border-radius: 8px;
+  padding: 2.5rem 2rem;
+  text-align: center;
+  box-shadow: var(--shadow-card);
+  margin-bottom: 2.25rem;
+  border-top: 5px solid var(--blue-primary);
+}
+
+.hero-banner-card h2 {
+  font-family: var(--font-serif);
+  font-size: 2.1rem;
+  color: var(--blue-navy);
+  margin-bottom: 0.5rem;
+}
+
+.hero-banner-card .hero-welcome {
+  font-size: 1.35rem;
+  font-weight: 600;
+  color: var(--blue-primary);
+  margin-bottom: 0.4rem;
+}
+
+.hero-banner-card .hero-project {
+  font-size: 1.05rem;
+  color: var(--text-muted);
+  margin-bottom: 1rem;
+}
+
+.hero-banner-card .hero-status-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  background-color: var(--status-green-bg);
+  color: var(--status-green);
+  font-weight: 600;
+  font-size: 0.9rem;
+  padding: 0.45rem 1.1rem;
+  border-radius: 999px;
+  border: 1px solid #bbf7d0;
+}
+
+.pulse-dot {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background-color: var(--status-green);
+  box-shadow: 0 0 0 2px rgba(21, 128, 61, 0.2);
+}
+
+/* Five Core KPI Cards */
+.metrics-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(205px, 1fr));
+  gap: 1.25rem;
+  margin-bottom: 2.25rem;
+}
+
+.metric-card {
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-light);
+  border-radius: 8px;
+  padding: 1.35rem;
+  box-shadow: var(--shadow-card);
+  border-left: 4px solid var(--blue-primary);
+}
+
+.metric-card-title {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--text-light);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 0.4rem;
+}
+
+.metric-card-val {
+  font-family: var(--font-sans);
+  font-size: 1.85rem;
+  font-weight: 700;
+  color: var(--blue-navy);
+  margin-bottom: 0.2rem;
+}
+
+.metric-card-badge {
+  font-size: 0.84rem;
+  color: var(--status-green);
+  font-weight: 600;
+}
+
+.metric-card-sub {
+  margin-top: 0.75rem;
+  padding-top: 0.65rem;
+  border-top: 1px solid var(--border-light);
+  font-size: 0.8rem;
+  color: var(--text-muted);
+}
+
+/* Comparative Analysis Table */
+.card-table-wrap {
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-light);
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: var(--shadow-card);
+  margin-bottom: 2rem;
+}
+
+.card-table-header {
+  padding: 1.25rem 1.5rem;
+  background-color: var(--bg-subtle);
+  border-bottom: 1px solid var(--border-light);
+}
+
+.card-table-header h3 {
+  font-family: var(--font-serif);
+  font-size: 1.3rem;
+  color: var(--blue-navy);
+}
+
+.report-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.report-table th {
+  background-color: #f8fafc;
+  color: var(--blue-navy);
+  font-size: 0.84rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  font-weight: 600;
+  padding: 1rem 1.25rem;
+  border-bottom: 2px solid var(--border-medium);
+  text-align: left;
+}
+
+.report-table td {
+  padding: 1.15rem 1.25rem;
+  border-bottom: 1px solid var(--border-light);
+  font-size: 0.94rem;
+  vertical-align: top;
+}
+
+.report-table tr:hover td {
+  background-color: #f1f5f9;
+}
+
+.table-badge-manual {
+  display: inline-block;
+  background-color: var(--status-red-bg);
+  color: var(--status-red);
+  font-size: 0.8rem;
+  font-weight: 600;
+  padding: 0.25rem 0.55rem;
+  border-radius: 4px;
+  margin-bottom: 0.35rem;
+}
+
+.table-badge-jenkins {
+  display: inline-block;
+  background-color: var(--status-green-bg);
+  color: var(--status-green);
+  font-size: 0.8rem;
+  font-weight: 600;
+  padding: 0.25rem 0.55rem;
+  border-radius: 4px;
+  margin-bottom: 0.35rem;
+}
+
+/* Deployment Console Runner */
+.runner-panel {
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-light);
+  border-radius: 8px;
+  padding: 1.5rem;
+  box-shadow: var(--shadow-card);
+  margin-bottom: 1.5rem;
+}
+
+.runner-actions {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.btn {
+  font-family: var(--font-sans);
+  font-size: 0.92rem;
+  font-weight: 600;
+  padding: 0.7rem 1.35rem;
+  border-radius: 6px;
+  cursor: pointer;
+  border: 1px solid transparent;
+  transition: all 0.15s ease;
+}
+
+.btn-navy {
+  background-color: var(--blue-primary);
+  color: #ffffff;
+}
+
+.btn-navy:hover {
+  background-color: var(--blue-navy);
+}
+
+.btn-outline {
+  background-color: #ffffff;
+  border-color: var(--border-medium);
+  color: var(--blue-navy);
+}
+
+.btn-outline:hover {
+  background-color: var(--bg-subtle);
+}
+
+/* Terminal Log View */
+.terminal-window {
+  background-color: var(--blue-deep);
+  color: #f8fafc;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: var(--shadow-card);
+  margin-bottom: 2rem;
+  border: 1px solid #1e3a8a;
+}
+
+.terminal-titlebar {
+  background-color: #051024;
+  padding: 0.75rem 1.15rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-family: var(--font-mono);
+  font-size: 0.82rem;
+  color: #93c5fd;
+  border-bottom: 1px solid #172554;
+}
+
+.terminal-logs {
+  padding: 1.35rem;
+  font-family: var(--font-mono);
+  font-size: 0.86rem;
+  line-height: 1.7;
+  min-height: 230px;
+  max-height: 380px;
+  overflow-y: auto;
+  white-space: pre-wrap;
+}
+
+.log-stage { color: #60a5fa; font-weight: 600; }
+.log-ok { color: #4ade80; }
+.log-cmd { color: #e2e8f0; }
+
+/* Code Boxes */
+.code-box {
+  background-color: #07152d;
+  color: #f1f5f9;
+  font-family: var(--font-mono);
+  font-size: 0.86rem;
+  padding: 1.35rem;
+  border-radius: 8px;
+  overflow-x: auto;
+  line-height: 1.6;
+  margin-bottom: 1.5rem;
+  border: 1px solid #1e3a8a;
+}
+
+/* Print Friendly */
+@media print {
+  .nav-bar, .runner-panel, .btn, .print-hide { display: none !important; }
+  .top-header { background: none; color: #000; border-bottom: 2px solid #000; padding: 0 0 1rem 0; }
+  .main-title { color: #000; }
+  .header-meta { color: #333; }
+  .tab-content { display: block !important; page-break-after: always; }
+}

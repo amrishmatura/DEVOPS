@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Comparative Study: Manual vs. Automated Software Deployment</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <!-- Editorial Masthead / Header -->
+  <header class="study-header">
+    <div class="header-container">
+      <span class="study-badge">DevOps Empirical Research & Comparative Analysis</span>
+      <h1 class="study-title">Comparative Study of Manual and Automated Software Deployment</h1>
+      <p class="study-subtitle">
+        An empirical benchmark comparing traditional manual runbook execution with Jenkins-based continuous delivery across five foundational deployment metrics: deployment duration, human effort, human error rate, failure frequency, and mean time to recovery (MTTR).
+      </p>
+
+      <div class="study-metadata">
+        <div class="meta-item">Focus Area: <strong>CI/CD vs. Manual Runbooks</strong></div>
+        <div class="meta-item">Automation Engine: <strong>Jenkins Declarative Pipeline</strong></div>
+        <div class="meta-item">Core Metrics: <strong>5 Empirical Key Performance Indicators (KPIs)</strong></div>
+        <div class="meta-item">Published: <strong>Academic Year 2026</strong></div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Sticky Navigation Bar -->
+  <nav class="study-nav-bar print-hide">
+    <div class="nav-container">
+      <button class="nav-btn active" data-tab="tab-overview">1. Overview & Findings</button>
+      <button class="nav-btn" data-tab="tab-matrix">2. Detailed Metrics Matrix</button>
+      <button class="nav-btn" data-tab="tab-simulator">3. Interactive Live Simulator</button>
+      <button class="nav-btn" data-tab="tab-visuals">4. Visual Analysis & Charts</button>
+      <button class="nav-btn" data-tab="tab-calculator">5. Effort & ROI Calculator</button>
+      <button class="nav-btn" data-tab="tab-codebase">6. Pipeline & Runbook Reference</button>
+    </div>
+  </nav>
+
+  <!-- Main Content Body -->
+  <main class="main-wrapper">
+
+    <!-- ======================================================================
+         TAB 1: Overview & Executive Summary
+         ====================================================================== -->
+    <section id="tab-overview" class="tab-pane active">
+      <div class="section-intro">
+        <h2>Executive Research Summary</h2>
+        <p>
+          Software release velocity and stability are decisive factors in modern engineering organizations. This study contrasts traditional manual server operations (SSH, terminal scripts, manual database migrations) with an automated Jenkins pipeline orchestrating continuous integration and automated deployment.
+        </p>
+      </div>
+
+      <!-- 5 Key Scorecards for the 5 Metrics -->
+      <div id="scorecards-container" class="scorecard-grid">
+        <!-- Dynamic populated by app.js -->
+      </div>
+
+      <!-- Comparative Narrative Cards -->
+      <div class="split-grid">
+        <div class="method-card manual-focus">
+          <h3>The Manual Deployment Paradigm</h3>
+          <p>
+            Manual deployments rely on human engineers executing terminal commands sequentially across target servers using documented runbooks or tribal knowledge.
+          </p>
+          <ul class="step-list">
+            <li>
+              <span class="step-num">01</span>
+              <div><strong>High Cognitive Fatigue:</strong> Engineers must track multiple terminal windows, environment flags, and database states under high stress.</div>
+            </li>
+            <li>
+              <span class="step-num">02</span>
+              <div><strong>Environmental Drift:</strong> Servers diverge over time due to ad-hoc packages, permissions, or manual hotfixes.</div>
+            </li>
+            <li>
+              <span class="step-num">03</span>
+              <div><strong>High Rollback Overhead:</strong> Reverting a failed release requires manual database snapshot restore and git checkouts, extending downtime.</div>
+            </li>
+          </ul>
+        </div>
+
+        <div class="method-card jenkins-focus">
+          <h3>The Jenkins Automated Pipeline</h3>
+          <p>
+            Jenkins automates the lifecycle from source control push to live release using version-controlled Declarative Pipelines (Pipeline-as-Code).
+          </p>
+          <ul class="step-list">
+            <li>
+              <span class="step-num">01</span>
+              <div><strong>Deterministic Reproducibility:</strong> Every deployment executes identical steps, container packaging, and automated quality gates.</div>
+            </li>
+            <li>
+              <span class="step-num">02</span>
+              <div><strong>Zero-Touch Operations:</strong> No manual terminal commands on production hosts, removing human typo and configuration omission risks.</div>
+            </li>
+            <li>
+              <span class="step-num">03</span>
+              <div><strong>Instantaneous Auto-Rollback:</strong> Synthetic health probes trigger automatic blue/green image rollbacks within 60 seconds of failure.</div>
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Quick Action / Print -->
+      <div style="display: flex; justify-content: flex-end; margin-top: 1rem;" class="print-hide">
+        <button id="btn-print-report" class="btn btn-outline">🖨️ Print Academic Study Report</button>
+      </div>
+    </section>
+
+    <!-- ======================================================================
+         TAB 2: Detailed Metrics Matrix
+         ====================================================================== -->
+    <section id="tab-matrix" class="tab-pane">
+      <div class="section-intro">
+        <h2>Quantitative Comparison Matrix</h2>
+        <p>
+          Direct side-by-side evaluation across the 5 primary research parameters. Metrics are based on observed industry benchmarks and simulated production releases.
+        </p>
+      </div>
+
+      <div class="table-card">
+        <div class="table-header-block">
+          <h3>Core Evaluation Dimensions</h3>
+        </div>
+        <div class="table-responsive">
+          <table class="study-table">
+            <thead>
+              <tr>
+                <th style="width: 32%;">Evaluation Metric</th>
+                <th style="width: 26%;">Manual Deployment</th>
+                <th style="width: 26%;">Jenkins Automation</th>
+                <th style="width: 16%;">Improvement</th>
+              </tr>
+            </thead>
+            <tbody id="comparison-table-body">
+              <!-- Dynamically populated by app.js -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Step Breakdown Deep Dive -->
+      <div class="split-grid">
+        <div class="method-card">
+          <h4>Typical Manual Runbook Timeline</h4>
+          <ol class="step-list" style="list-style-type: decimal; padding-left: 1.25rem;">
+            <li>Engineer logs into bastion host & establishes SSH session (3-5 mins)</li>
+            <li>Pull latest release tag from Git and check for untracked files (5-10 mins)</li>
+            <li>Run package manager updates and compile assets locally (10-15 mins)</li>
+            <li>Execute SQL migration scripts manually via database CLI (10-20 mins)</li>
+            <li>Restart systemd daemon and web server services (3-5 mins)</li>
+            <li>Perform manual user-journey validation in production browser (10-15 mins)</li>
+          </ol>
+        </div>
+
+        <div class="method-card">
+          <h4>Automated Jenkins Pipeline Stages</h4>
+          <ol class="step-list" style="list-style-type: decimal; padding-left: 1.25rem;">
+            <li>Webhook triggers Jenkins Declarative Pipeline from Git push (10 secs)</li>
+            <li>Isolated workspace checkout and dependency verification (30 secs)</li>
+            <li>Execute automated unit, lint, and regression test suites (2 mins)</li>
+            <li>Build immutable Docker container image and push to registry (1.5 mins)</li>
+            <li>Kubernetes rolling rollout / zero-downtime container swap (1 min)</li>
+            <li>Automated synthetic probes confirm HTTP 200 OK & telemetry health (20 secs)</li>
+          </ol>
+        </div>
+      </div>
+    </section>
+
+    <!-- ======================================================================
+         TAB 3: Interactive Live Simulator
+         ====================================================================== -->
+    <section id="tab-simulator" class="tab-pane">
+      <div class="section-intro">
+        <h2>Live Deployment Simulator</h2>
+        <p>
+          Simulate both deployment methodologies in real-time. Inspect stage progression, terminal logs, human interaction demands, and observe how both paradigms respond when an unexpected error occurs.
+        </p>
+      </div>
+
+      <div class="sim-controls-panel">
+        <div class="sim-actions">
+          <div class="btn-group">
+            <button id="btn-run-manual" class="btn btn-outline">▶ Run Manual Deployment</button>
+            <button id="btn-run-jenkins" class="btn btn-navy">⚡ Run Jenkins Automated Pipeline</button>
+          </div>
+
+          <label class="toggle-label">
+            <input type="checkbox" id="inject-failure-toggle">
+            <span>Inject Failure Scenario (Simulates Migration/API Failure & Rollback)</span>
+          </label>
+        </div>
+      </div>
+
+      <!-- Simulated Terminal Box -->
+      <div class="terminal-card">
+        <div class="terminal-header">
+          <div class="terminal-dots">
+            <span class="terminal-dot"></span>
+            <span class="terminal-dot"></span>
+            <span class="terminal-dot"></span>
+          </div>
+          <span id="sim-status">Console Idle — Select a deployment method above</span>
+          <span>Simulation Mode</span>
+        </div>
+        <div id="terminal-logs" class="terminal-body">
+// Deployment execution logs will stream here...
+// Click "Run Manual Deployment" or "Run Jenkins Automated Pipeline" to begin.
+        </div>
+      </div>
+    </section>
+
+    <!-- ======================================================================
+         TAB 4: Visual Analysis & Charts
+         ====================================================================== -->
+    <section id="tab-visuals" class="tab-pane">
+      <div class="section-intro">
+        <h2>Visual Comparative Charts</h2>
+        <p>
+          Visual comparative graphs highlighting the divergence between manual and automated deployment across all 5 research parameters.
+        </p>
+      </div>
+
+      <div class="chart-legend">
+        <div class="legend-item">
+          <span class="legend-color legend-manual"></span>
+          <span>Manual Deployment (High Friction & Delay)</span>
+        </div>
+        <div class="legend-item">
+          <span class="legend-color legend-jenkins"></span>
+          <span>Jenkins Automated Pipeline (Streamlined & Predictable)</span>
+        </div>
+      </div>
+
+      <div id="charts-container" style="margin-top: 1.5rem;">
+        <!-- Dynamically rendered SVG bar charts -->
+      </div>
+    </section>
+
+    <!-- ======================================================================
+         TAB 5: Effort & ROI Calculator
+         ====================================================================== -->
+    <section id="tab-calculator" class="tab-pane">
+      <div class="section-intro">
+        <h2>Engineering Effort & Cost Impact Calculator</h2>
+        <p>
+          Quantify the tangible organizational return on investment (ROI) by modeling how much engineering time and expenditure are recovered when migrating to Jenkins.
+        </p>
+      </div>
+
+      <div class="calc-card">
+        <div class="calc-grid">
+          <div>
+            <h4 style="margin-bottom: 1.25rem;">Deployment Parameters</h4>
+
+            <div class="calc-form-group">
+              <label for="calc-deploys">Deployments Per Month</label>
+              <input type="number" id="calc-deploys" class="calc-input" value="12" min="1" max="200">
+            </div>
+
+            <div class="calc-form-group">
+              <label for="calc-team-size">Engineers Involved in Manual Deploy</label>
+              <input type="number" id="calc-team-size" class="calc-input" value="2" min="1" max="20">
+            </div>
+
+            <div class="calc-form-group">
+              <label for="calc-hourly-rate">Average Blended Hourly Cost ($ USD / hour)</label>
+              <input type="number" id="calc-hourly-rate" class="calc-input" value="65" min="10" max="500">
+            </div>
+          </div>
+
+          <div class="calc-results-box">
+            <h4>Estimated Annual Gains</h4>
+
+            <div class="calc-result-stat">
+              <div class="calc-result-sub">Total Engineering Hours Saved</div>
+              <div id="res-hours-saved" class="calc-result-val">--</div>
+              <div class="calc-result-sub">Recovered for feature development instead of release babysitting</div>
+            </div>
+
+            <div class="calc-result-stat">
+              <div class="calc-result-sub">Annual Cost Savings</div>
+              <div id="res-cost-saved" class="calc-result-val">--</div>
+              <div class="calc-result-sub">Direct labor expenditure reduction</div>
+            </div>
+
+            <div class="calc-result-stat">
+              <div class="calc-result-sub">Production Incidents Avoided</div>
+              <div id="res-incidents-avoided" class="calc-result-val">--</div>
+              <div class="calc-result-sub">Prevented by automated build and quality gates</div>
+            </div>
+
+            <div style="display: flex; justify-content: space-between; margin-top: 1rem; font-size: 0.82rem; color: var(--text-muted);">
+              <span>Manual Time: <strong id="res-manual-hours">--</strong></span>
+              <span>Jenkins Time: <strong id="res-automated-hours">--</strong></span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ======================================================================
+         TAB 6: Pipeline & Runbook Reference
+         ====================================================================== -->
+    <section id="tab-codebase" class="tab-pane">
+      <div class="section-intro">
+        <h2>Implementation Codebase Comparison</h2>
+        <p>
+          Compare the brittle legacy shell script runbook with the modern, declarative, reproducible Jenkins pipeline that replaces it.
+        </p>
+      </div>
+
+      <div class="split-grid">
+        <div>
+          <h3>Legacy Manual Runbook Script (Bash)</h3>
+          <p style="margin-bottom: 0.75rem; font-size: 0.85rem;">Prone to SSH timeout drops, unhandled exceptions, and missing environment variables.</p>
+          <pre class="code-preview-box"><code>#!/usr/bin/env bash
+# manual_deploy_checklist.sh - High-risk manual execution
+set -e
+
+echo "=== MANUAL PRODUCTION RELEASE SEQUENCE ==="
+read -p "Did you backup the production DB? (y/n) " ans
+if [ "$ans" != "y" ]; then exit 1; fi
+
+ssh deploy@prod-server-01.internal &lt;&lt; 'EOF'
+  cd /var/www/production-app
+  git fetch origin
+  git checkout release-v2.4
+  git pull origin release-v2.4
+
+  npm install --production
+  npm run build
+
+  # If migration fails, server is left in inconsistent state
+  node migrations/run.js
+
+  systemctl restart webapp.service
+  systemctl reload nginx
+EOF
+
+echo "Please open your browser to verify if app is up..."</code></pre>
+        </div>
+
+        <div>
+          <h3>Jenkins Declarative Pipeline (Jenkinsfile)</h3>
+          <p style="margin-bottom: 0.75rem; font-size: 0.85rem;">Declarative, version-controlled, isolated containerized execution with automated rollback.</p>
+          <pre class="code-preview-box"><code>// Jenkinsfile - Deterministic Pipeline as Code
+pipeline {
+  agent any
+  stages {
+    stage('Checkout SCM') {
+      steps { checkout scm }
+    }
+    stage('Automated Tests & Quality') {
+      steps {
+        sh 'npm ci'
+        sh 'npm test -- --coverage'
+      }
+    }
+    stage('Container Build') {
+      steps {
+        sh 'docker build -t app:${BUILD_NUMBER} .'
+      }
+    }
+    stage('Zero-Downtime Rollout') {
+      steps {
+        sh 'kubectl apply -f k8s/production/'
+        sh 'kubectl rollout status deployment/app'
+      }
+    }
+  }
+  post {
+    failure {
+      // Automatic instantaneous rollback
+      sh 'kubectl rollout undo deployment/app'
+    }
+  }
+}</code></pre>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <script src="js/charts.js"></script>
+  <script src="js/simulator.js"></script>
+  <script src="js/calculator.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
