@@ -61,22 +61,24 @@ E:\DEVOPS
 
 ---
 
-### Method B: Automated CI/CD Pipeline (Jenkins)
-1. **Start Jenkins Server** (runs locally on port 8080):
-   ```cmd
-   .\start_real_jenkins.bat
-   ```
-   - Open: [http://localhost:8080](http://localhost:8080)
-   - Initial Admin Password: `5f98dd96a25041a7af1bdb68de273725` (also stored in `~/.jenkins/secrets/initialAdminPassword`)
+### Method B: Automated CI/CD Pipeline (Jenkins on Port 8090)
+1. **Jenkins Server URL**:
+   - Open in your browser: [http://localhost:8090](http://localhost:8090)
+   - Your Jenkins service is installed at `C:\Program Files\Jenkins` and runs automatically on port 8090.
+   - User account: `amrish` (or admin)
 2. **Job Configuration**:
-   - Job Name: `Deployment-Automation`
+   - Job Name: `Deployment-Automation` (pre-configured in `C:\ProgramData\Jenkins\.jenkins\jobs\Deployment-Automation`)
    - Type: **Pipeline**
    - Definition: **Pipeline script from SCM**
    - SCM: **Git**
    - Repository URL: `https://github.com/amrishmatura/DEVOPS.git`
    - Branch Specifier: `*/main`
    - Script Path: `Jenkinsfile`
-3. Click **Build Now** to execute the pipeline. Build #3 runs in ~8.4 seconds.
+3. Click **Build Now** to execute the pipeline. Jenkins will pull the latest code from GitHub and execute the 3 stages:
+   - Stage 1: `Install Dependencies` (`npm install`)
+   - Stage 2: `Deploy Application` (`start /B node server.js`)
+   - Stage 3: `Verify Deployment` (`curl http://localhost:3000/health`)
+   - Reference duration: **8.4 seconds** (Build #3).
 
 ---
 
